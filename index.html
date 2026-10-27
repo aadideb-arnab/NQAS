@@ -1,0 +1,167 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NQAS Portal</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--bg:#f6f8fc;--fg:#1f1f1f;--card:#fff;--ac:#0b57d0;--bd:#dadce0;--mut:#5f6368;--tint:#eaf1fb;--sel:#d3e3fd;--sh:0 1px 2px rgba(60,64,67,.3),0 1px 3px 1px rgba(60,64,67,.15);--sh2:0 4px 8px 3px rgba(60,64,67,.15),0 1px 3px rgba(60,64,67,.3)}
+*{box-sizing:border-box}body{margin:0;font:14px/1.45 "Google Sans",Roboto,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--fg)}
+header{display:flex;align-items:center;gap:10px;height:60px;padding:0 16px}header b{font-size:20px;font-weight:400;color:#444746}header .sp{flex:1}.search{flex:1;max-width:640px;margin-left:24px}.search input{width:100%;border:0;border-radius:24px;background:#eaf1fb;padding:11px 20px;font-size:15px}.search input:focus{background:#fff;box-shadow:var(--sh2);outline:0}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--ac);color:#fff;display:grid;place-items:center;font-weight:600;box-shadow:var(--sh)}
+.chip{background:var(--card);border-radius:20px;padding:6px 14px;box-shadow:var(--sh);color:var(--mut);font-size:13px}
+#shell{display:flex;align-items:flex-start}nav{width:232px;padding:4px 8px 8px 0;display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+nav button.nv{background:none;color:#444746;text-align:left;border-radius:0 20px 20px 0;padding:9px 18px;height:40px;font-size:14px;box-shadow:none}
+nav button.nv:hover{background:#e9eef6}nav button.nv.on{background:var(--sel);color:#041e49;font-weight:600}
+main{flex:1;min-width:0;background:var(--card);border-radius:16px;margin:0 16px 16px 0;padding:16px;min-height:calc(100vh - 76px);box-shadow:var(--sh)}
+button{background:var(--ac);color:#fff;border:0;border-radius:20px;padding:7px 18px;cursor:pointer;font:inherit;font-weight:500;transition:box-shadow .15s,background .15s}
+button:hover{box-shadow:var(--sh)}button.g{background:transparent;color:var(--ac);border:1px solid var(--bd)}button.g:hover{background:var(--tint)}
+input,select,textarea{font:inherit;padding:6px 9px;border:1px solid var(--bd);border-radius:8px;background:#fff;color:var(--fg);max-width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ac);outline-offset:-1px;border-color:var(--ac)}textarea{width:100%}
+.card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:var(--sh)}h3{margin:0 0 10px;font-weight:500;font-size:18px}
+table{border-collapse:collapse;width:100%}th,td{border-bottom:1px solid #e8eaed;padding:7px 9px;text-align:left;vertical-align:top}th{background:var(--bg);color:#444746;font-weight:500;position:sticky;top:0}
+.wrap{overflow-x:auto}.sm{font-size:12px;color:var(--mut)}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+tr.click{cursor:pointer}tr.click:hover{background:#f2f6fc;box-shadow:inset 3px 0 var(--ac)}.tag{padding:2px 10px;border-radius:12px;background:var(--tint);color:#0842a0;font-size:12px}.bad{color:#d93025;font-weight:600}
+#modal{position:fixed;inset:0;background:#0006;display:none;overflow:auto;padding:24px}#modal>div{max-width:900px;margin:auto;background:var(--card);border-radius:16px;padding:20px;box-shadow:var(--sh2)}
+.ph{display:none}.sig{display:none}
+@media(max-width:760px){#shell{flex-direction:column}nav{width:100%;flex-direction:row;overflow-x:auto;padding:0 8px 8px}nav button.nv{border-radius:20px;white-space:nowrap}main{margin:0 8px 8px;width:calc(100% - 16px)}}
+@media print{header,nav,.np,#modal button,.row{display:none!important}body{background:#fff;color:#000;font-size:11px}.ph,.sig{display:block}#shell{display:block}main{margin:0;padding:0;box-shadow:none;border-radius:0}
+.card{box-shadow:none;padding:0}th{background:#eee!important;color:#000;position:static}td,th{border:1px solid #999}input,select{border:0;background:none;color:#000;appearance:none;padding:0}
+body.pm main{display:none}body.pm #modal{display:block!important;position:static;background:none;padding:0}body.pm #modal>div{max-width:none;padding:0;box-shadow:none}
+.sig{display:flex!important;justify-content:space-between;margin-top:50px}.sig div{border-top:1px solid #000;width:30%;text-align:center;padding-top:4px}
+.ph{text-align:center;margin-bottom:8px}.ph h2,.ph h3{margin:2px}tr{break-inside:avoid}}
+</style></head><body>
+<header id="hd" class="np"></header><div id="shell"><nav id="nav" class="np"></nav><main id="main"></main></div><div id="modal" onclick="if(event.target==this)cm()"><div id="mbox"></div></div>
+<script>
+const CFG={url:'https://tppukdafjwvvwkfeiilb.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwcHVrZGFmand2dndrZmVpaWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwODA2MjAsImV4cCI6MjEwODY1NjYyMH0.97gn3RkL7HzvUXTAyD6K5UME38Pfl-3-cEoYW6Y1JGs',hospital:'Chandannagar Sub-Divisional Hospital'};
+const sb=supabase.createClient(CFG.url,CFG.key);
+const STAGES=['Gap Identified','Planned','Corrected','Implemented','Monitored','Reviewed','Re-assessed','Improved'];
+const ATYPES=['Internal','District','State','National','Surveillance'];
+let me,depts=[],A={q:''},qt;
+const $=i=>document.getElementById(i);
+const h=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+const fd=d=>d?d.split('-').reverse().join('/'):'';
+const dn=id=>depts.find(d=>d.id==id)?.name||'';
+const mine=()=>depts.filter(d=>d.active&&(me.role=='core'||me.dept_ids.includes(d.id)));
+const opts=(a,sel)=>a.map(x=>`<option ${x==sel?'selected':''}>${h(x)}</option>`).join('');
+const dopts=(sel,all)=>(all?'<option value="">All departments</option>':'')+mine().map(d=>`<option value="${d.id}" ${d.id==sel?'selected':''}>${h(d.name)}</option>`).join('');
+const pct=(g,s)=>s?Math.round(g/(2*s)*1000)/10+'%':'–';
+async function all(q){let o=[],f=0;for(;;){const{data,error}=await q().range(f,f+999);if(error)throw error;o=o.concat(data);if(data.length<1000)return o;f+=1000}}
+const ph=(t,sub)=>`<div class="ph"><h2>${h(CFG.hospital)}</h2><h3>National Quality Assurance Standards – ${h(t)}</h3><div>${sub||''} | Printed on ${fd(today())}</div></div>`;
+const sig=()=>`<div class="sig"><div>Prepared by (Dept. Nodal)</div><div>Verified by (NQAS Nodal Officer)</div><div>Core Committee</div></div>`;
+function cm(){$('modal').style.display='none'}
+function pm(){document.body.classList.add('pm');print();document.body.classList.remove('pm')}
+
+async function boot(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session)return login();
+  const{data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).single();me=p;
+  if(!me||me.role=='pending'){$('nav').innerHTML='';$('main').innerHTML='<div class="card">Your account is created but not yet activated. Ask the Core Committee to assign your role and department.<br><br><button onclick="logout()">Logout</button></div>';return}
+  depts=(await sb.from('departments').select('*').order('name')).data||[];
+  const t=[['dash','Dashboard'],['assess','Assessment'],['gaps','Gaps & Actions'],['rep','Reports']];if(me.role=='core')t.push(['admin','Admin']);
+  $('nav').innerHTML=t.map(x=>`<button class="nv" id="n_${x[0]}" onclick="go('${x[0]}')">${x[1]}</button>`).join('');
+  $('hd').innerHTML=`<span class="logo">N</span><b>NQAS Portal</b><div class="search"><input id="q" type="search" placeholder="Search gaps by ref, text, owner, stage, department…" oninput="sq()"></div><span class="sp"></span><span class="chip">${h(me.full_name||me.email)} · ${{core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry'}[me.role]}</span><button class="g" onclick="logout()">Logout</button>`;
+  go('dash');
+}
+function login(){$('nav').innerHTML='';$('hd').innerHTML='<span class="logo">N</span><b>NQAS Portal</b>';$('main').innerHTML=`<div class="card" style="max-width:340px;margin:60px auto;box-shadow:var(--sh2)"><h3>NQAS Portal – Login</h3><p class="sm">Authorised users only.</p><p><input id="em" type="email" placeholder="Email" style="width:100%"></p><p><input id="pw" type="password" placeholder="Password" style="width:100%"></p><button onclick="doLogin()">Login</button> <span id="le" class="bad"></span></div>`}
+async function doLogin(){const{error}=await sb.auth.signInWithPassword({email:$('em').value,password:$('pw').value});if(error)$('le').textContent=error.message;else boot()}
+async function logout(){await sb.auth.signOut();location.reload()}
+function go(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.id=='n_'+v));({dash,assess,gaps,rep,admin}[v])().catch(e=>$('main').innerHTML='<div class="card bad">'+h(e.message)+'</div>')}
+
+/* ---------- Dashboard ---------- */
+async function dash(){
+  const[S,AR,G]=await Promise.all([all(()=>sb.from('assessment_summary').select('*').order('assess_date',{ascending:false}).order('id')),all(()=>sb.from('assessment_area_summary').select('*').order('assessment_id').order('area')),all(()=>sb.from('gaps').select('dept_id,stage,target_date').order('id'))]);
+  const lat={};S.forEach(a=>{if(!lat[a.dept_id])lat[a.dept_id]=a});
+  const rows=mine().map(d=>{const a=lat[d.id],g=G.filter(x=>x.dept_id==d.id&&x.stage!='Improved'),od=g.filter(x=>x.target_date&&x.target_date<today()).length;
+    const ar=l=>{const r=a&&AR.find(x=>x.assessment_id==a.id&&x.area[0]==l);return r?pct(r.got,r.scored):'–'};
+    return`<tr><td>${h(d.name)}</td><td>${a?fd(a.assess_date)+' <span class="tag">'+h(a.atype)+(a.status=='draft'?' · draft':'')+'</span>':'–'}</td><td>${a?a.scored:0}</td><td><b>${a?pct(a.got,a.scored):'–'}</b></td><td>${ar('G')}</td><td>${ar('H')}</td><td>${g.length}</td><td class="${od?'bad':''}">${od}</td></tr>`}).join('');
+  $('main').innerHTML=`<div class="card wrap"><h3>Department status (latest assessment)</h3><table><tr><th>Department</th><th>Last assessment</th><th>Items scored</th><th>Score</th><th>G – Quality Mgmt</th><th>H – Outcome</th><th>Open gaps</th><th>Overdue</th></tr>${rows}</table><p class="sm">Score = marks obtained ÷ maximum for items scored so far (2 = full, 1 = partial, 0 = non-compliant).</p></div>
+  <div class="card"><h3>Cycle</h3>Assess → Identify Gap → Plan → Correct → Implement → Monitor → Review → Re-assess → Improve. Each step is recorded with a date in <b>Gaps & Actions</b> and can be printed from <b>Reports</b>.</div>`;
+}
+
+/* ---------- Assessment ---------- */
+async function assess(d){
+  A.dept=d||A.dept||mine()[0]?.id;A.cur=null;
+  const L=await all(()=>sb.from('assessment_summary').select('*').eq('dept_id',A.dept).order('assess_date',{ascending:false}).order('id'));
+  $('main').innerHTML=`<div class="card"><div class="row"><select onchange="assess(this.value)">${dopts(A.dept)}</select></div>
+  <div class="row"><b>New assessment:</b><input type="date" id="nd" value="${today()}"><select id="nt">${opts(ATYPES)}</select><input id="na" placeholder="Assessor name(s)" size="30"><button onclick="newA()">Create</button></div>
+  <table><tr><th>Date</th><th>Type</th><th>Assessors</th><th>Status</th><th>Scored</th><th>Score</th></tr>${L.map(a=>`<tr class="click" onclick="openA('${a.id}')"><td>${fd(a.assess_date)}</td><td>${h(a.atype)}</td><td></td><td>${a.status}</td><td>${a.scored}</td><td>${pct(a.got,a.scored)}</td></tr>`).join('')}</table></div><div id="ae"></div>`;
+}
+async function newA(){const{data,error}=await sb.from('assessments').insert({dept_id:A.dept,assess_date:$('nd').value,atype:$('nt').value,assessors:$('na').value}).select().single();if(error)return alert(error.message);A.cur=data;loadA()}
+async function openA(id){const{data}=await sb.from('assessments').select('*').eq('id',id).single();A.cur=data;loadA()}
+async function loadA(){
+  $('ae').innerHTML='<div class="card">Loading checklist…</div>';
+  A.cps=await all(()=>sb.from('checkpoints').select('*').eq('dept_id',A.cur.dept_id).order('sheet').order('seq'));
+  A.sc={};(await all(()=>sb.from('scores').select('*').eq('assessment_id',A.cur.id).order('checkpoint_id'))).forEach(s=>A.sc[s.checkpoint_id]=s);
+  A.sheet=[...new Set(A.cps.map(c=>c.sheet))][0];A.area=null;drawA();
+}
+function drawA(){
+  const sheets=[...new Set(A.cps.map(c=>c.sheet))],areas=[...new Set(A.cps.filter(c=>c.sheet==A.sheet).map(c=>c.area))];
+  A.area=areas.includes(A.area)?A.area:areas[0];
+  const ro=A.cur.status=='final'&&me.role=='deo'||A.cur.status=='final'&&0,rows=A.cps.filter(c=>c.sheet==A.sheet&&c.area==A.area);
+  const done=Object.values(A.sc).filter(s=>s.score!==null).length;
+  let lastStd='';
+  $('ae').innerHTML=`<div class="card"><div class="row"><b>${h(dn(A.cur.dept_id))} – ${fd(A.cur.assess_date)} (${h(A.cur.atype)}) · ${A.cur.status}</b><span class="sm">${done} of ${A.cps.length} items scored</span></div>
+  <div class="row"><select onchange="A.sheet=this.value;A.area=null;drawA()">${sheets.map(s=>`<option ${s==A.sheet?'selected':''}>${h(s)}</option>`).join('')}</select>
+  <select onchange="A.area=this.value;drawA()">${opts(areas,A.area)}</select>
+  <button class="g" onclick="print()">Print this section</button>
+  ${A.cur.status=='draft'&&me.role!='deo'?'<button onclick="finA()">Finalize</button>':''}<button onclick="genGaps()">Generate gaps (score &lt; 2)</button></div>
+  ${ph('Assessment Sheet: '+h(A.sheet)+' / Area '+h(A.area),h(dn(A.cur.dept_id))+' | Date of assessment '+fd(A.cur.assess_date)+' | '+h(A.cur.atype)+' | Assessors: '+h(A.cur.assessors))}
+  <div class="wrap"><table><tr><th>Ref</th><th>Checkpoint / Means of verification</th><th>Method</th><th>Score</th><th>Remarks</th></tr>${rows.map(c=>{const s=A.sc[c.id]||{};
+    const hd=c.standard!=lastStd?(lastStd=c.standard,`<tr><td colspan="5"><b>${h(c.standard)}</b></td></tr>`):'';
+    return hd+`<tr><td>${h(c.me_ref)}</td><td>${h(c.checkpoint)}<div class="sm">${h(c.mov)}</div></td><td>${h(c.method)}</td><td><select onchange="sv(${c.id},this.closest('tr'))" ${A.cur.status=='final'?'disabled':''}><option value="">–</option>${[0,1,2].map(n=>`<option ${s.score===n?'selected':''}>${n}</option>`).join('')}</select></td><td><input value="${h(s.remarks)}" ${A.cur.status=='final'?'disabled':''} onchange="sv(${c.id},this.closest('tr'))"></td></tr>`}).join('')}</table></div>${sig()}</div>`;
+}
+async function sv(id,tr){const v=tr.querySelector('select').value,r=tr.querySelector('input').value,sc=v===''?null:+v;
+  const{error}=await sb.from('scores').upsert({assessment_id:A.cur.id,checkpoint_id:id,score:sc,remarks:r,updated_at:new Date().toISOString()});
+  tr.style.background=error?'#fdd':'#dfd';if(error)alert(error.message);else A.sc[id]={score:sc,remarks:r}}
+async function finA(){if(!confirm('Finalize? Scores will be locked.'))return;const{error}=await sb.from('assessments').update({status:'final'}).eq('id',A.cur.id);if(error)return alert(error.message);A.cur.status='final';drawA()}
+async function genGaps(){
+  const low=Object.values(A.sc).filter(s=>s.score!==null&&s.score<2).map(s=>s.checkpoint_id);
+  const ex=await all(()=>sb.from('gaps').select('checkpoint_id').eq('dept_id',A.cur.dept_id).neq('stage','Improved').order('id'));const have=new Set(ex.map(e=>e.checkpoint_id));
+  const rows=low.filter(k=>!have.has(k)).map(k=>({dept_id:A.cur.dept_id,checkpoint_id:k,assessment_id:A.cur.id,description:A.cps.find(c=>c.id==k).checkpoint,identified_on:A.cur.assess_date}));
+  for(let i=0;i<rows.length;i+=300){const{error}=await sb.from('gaps').insert(rows.slice(i,i+300));if(error)return alert(error.message)}
+  alert(rows.length+' new gap(s) created; '+(low.length-rows.length)+' already open.')}
+
+/* ---------- Gaps ---------- */
+async function gaps(){
+  A.g=await all(()=>sb.from('gaps').select('*,checkpoints(me_ref,checkpoint,area,standard,mov)').order('identified_on',{ascending:false}).order('id'));
+  $('main').innerHTML=`<div class="card"><div class="row"><select id="gd" onchange="gl()">${dopts('',1)}</select><select id="gs" onchange="gl()"><option value="">All stages</option>${opts(STAGES)}</select><select id="ga" onchange="gl()"><option value="">All areas</option>${'ABCDEFGH'.split('').map(x=>`<option>${x}</option>`).join('')}</select></div><div class="wrap" id="gt"></div></div>`;gl()}
+function sq(){clearTimeout(qt);qt=setTimeout(()=>{A.q=$('q').value.trim().toLowerCase();if($('gt'))gl();else if(A.q)go('gaps')},250)}
+function gl(){const d=$('gd').value,s=$('gs').value,a=$('ga').value,w=(A.q||'').split(/\s+/).filter(Boolean);
+  const L=A.g.filter(g=>(!d||g.dept_id==d)&&(!s||g.stage==s)&&(!a||g.checkpoints?.area?.[0]==a)&&(!w.length||w.every(x=>[g.checkpoints?.me_ref,g.checkpoints?.standard,g.description,g.root_cause,g.owner,g.stage,g.priority,dn(g.dept_id)].join(' ').toLowerCase().includes(x))));
+  $('gt').innerHTML=`<table><tr><th>Ref</th><th>Gap</th><th>Dept</th><th>Stage</th><th>Priority</th><th>Identified</th><th>Target</th></tr>${L.map(g=>`<tr class="click" onclick="openGap('${g.id}')"><td>${h(g.checkpoints?.me_ref)}</td><td>${h(g.description)}</td><td>${h(dn(g.dept_id))}</td><td><span class="tag">${h(g.stage)}</span></td><td>${h(g.priority)}</td><td>${fd(g.identified_on)}</td><td class="${g.target_date&&g.target_date<today()&&g.stage!='Improved'?'bad':''}">${fd(g.target_date)}</td></tr>`).join('')}</table><p class="sm">${L.length} record(s)${A.q?' matching “'+h(A.q)+'”':''}</p>`}
+async function openGap(id){
+  const g=A.g.find(x=>x.id==id),ac=await all(()=>sb.from('activities').select('*').eq('gap_id',id).order('act_date').order('created_at'));A.gid=id;
+  $('mbox').innerHTML=`<div class="row np"><button onclick="pm()">Print record</button><button class="g" onclick="cm()">Close</button></div>
+  ${ph('Gap & Corrective Action Record',h(dn(g.dept_id)))}
+  <p><b>${h(g.checkpoints?.me_ref)}</b> · ${h(g.checkpoints?.standard)}<br>${h(g.description)}<br><span class="sm">${h(g.checkpoints?.mov)}</span></p>
+  <div class="row">Identified on <b>${fd(g.identified_on)}</b> · Stage <span class="tag">${h(g.stage)}</span></div>
+  <div class="row">Priority <select id="gp">${opts(['High','Medium','Low'],g.priority)}</select> Owner <input id="go" value="${h(g.owner)}"> Target date <input type="date" id="gt2" value="${g.target_date||''}"> <button class="np" onclick="saveGap()">Save</button></div>
+  <p>Root cause / action plan<textarea id="gr" rows="3">${h(g.root_cause)}</textarea></p>
+  <h4>Date-wise activity</h4><table><tr><th>Date</th><th>Stage</th><th>Activity</th><th>By</th><th>Evidence ref.</th></tr>${ac.map(a=>`<tr><td>${fd(a.act_date)}</td><td>${h(a.stage)}</td><td>${h(a.details)}</td><td>${h(a.responsible||a.entered_by_name)}</td><td>${h(a.evidence)}</td></tr>`).join('')||'<tr><td colspan="5" class="sm">No activity recorded yet</td></tr>'}</table>
+  <div class="row np" style="margin-top:10px"><input type="date" id="ad" value="${today()}"><select id="as">${opts(STAGES.slice(1),STAGES[STAGES.indexOf(g.stage)+1]||g.stage)}</select><input id="at" placeholder="What was done" size="34"><input id="ab" placeholder="Responsible" size="14"><input id="ae2" placeholder="Evidence (doc/photo ref)" size="18"><button onclick="addAct()">Add entry</button></div><p class="sm np">Entries are permanent (cannot be edited) to preserve the documentation trail.</p>${sig()}`;
+  $('modal').style.display='block'}
+async function saveGap(){const{error}=await sb.from('gaps').update({priority:$('gp').value,owner:$('go').value,target_date:$('gt2').value||null,root_cause:$('gr').value}).eq('id',A.gid);if(error)return alert(error.message);alert('Saved')}
+async function addAct(){const g=A.g.find(x=>x.id==A.gid),st=$('as').value;if(!$('at').value.trim())return alert('Enter details');
+  const{error}=await sb.from('activities').insert({gap_id:g.id,dept_id:g.dept_id,stage:st,act_date:$('ad').value,details:$('at').value,responsible:$('ab').value,evidence:$('ae2').value,entered_by_name:me.full_name||me.email});if(error)return alert(error.message);
+  await sb.from('gaps').update({stage:st}).eq('id',g.id);g.stage=st;openGap(g.id);gl()}
+
+/* ---------- Reports ---------- */
+async function rep(){
+  $('main').innerHTML=`<div class="card"><div class="row"><select id="rt"><option value="reg">Gap register</option><option value="log">Date-wise activity log</option></select><select id="rd">${dopts('',1)}</select>From <input type="date" id="rf"> To <input type="date" id="rto" value="${today()}"><button onclick="runRep()">Show</button><button class="g" onclick="print()">Print</button></div><div id="ro"></div></div>`}
+async function runRep(){
+  const t=$('rt').value,d=$('rd').value,f=$('rf').value,to=$('rto').value,sub=(d?h(dn(d)):'All departments')+' | '+(f?fd(f):'start')+' to '+fd(to);
+  if(t=='reg'){let q=()=>sb.from('gaps').select('*,checkpoints(me_ref,area)').order('dept_id').order('identified_on').order('id');const G=(await all(q)).filter(g=>(!d||g.dept_id==d)&&(!f||g.identified_on>=f)&&g.identified_on<=to);
+    $('ro').innerHTML=ph('Gap Register',sub)+`<table><tr><th>#</th><th>Dept</th><th>Ref</th><th>Gap</th><th>Root cause / plan</th><th>Owner</th><th>Priority</th><th>Identified</th><th>Target</th><th>Stage</th></tr>${G.map((g,i)=>`<tr><td>${i+1}</td><td>${h(dn(g.dept_id))}</td><td>${h(g.checkpoints?.me_ref)}</td><td>${h(g.description)}</td><td>${h(g.root_cause)}</td><td>${h(g.owner)}</td><td>${h(g.priority)}</td><td>${fd(g.identified_on)}</td><td>${fd(g.target_date)}</td><td>${h(g.stage)}</td></tr>`).join('')}</table>${sig()}`}
+  else{const[Ac,Gp]=await Promise.all([all(()=>sb.from('activities').select('*').order('act_date').order('created_at')),all(()=>sb.from('gaps').select('id,description,checkpoints(me_ref)').order('id'))]);
+    const gm={};Gp.forEach(g=>gm[g.id]=g);const R=Ac.filter(a=>(!d||a.dept_id==d)&&(!f||a.act_date>=f)&&a.act_date<=to);
+    $('ro').innerHTML=ph('Date-wise Activity Log',sub)+`<table><tr><th>Date</th><th>Dept</th><th>Ref</th><th>Stage</th><th>Activity</th><th>Responsible</th><th>Evidence</th></tr>${R.map(a=>`<tr><td>${fd(a.act_date)}</td><td>${h(dn(a.dept_id))}</td><td>${h(gm[a.gap_id]?.checkpoints?.me_ref)}</td><td>${h(a.stage)}</td><td>${h(a.details)}</td><td>${h(a.responsible||a.entered_by_name)}</td><td>${h(a.evidence)}</td></tr>`).join('')}</table>${sig()}`}}
+
+/* ---------- Admin (Core only) ---------- */
+async function admin(){
+  const P=await all(()=>sb.from('profiles').select('*').order('email')),D=depts.filter(d=>d.active);
+  $('main').innerHTML=`<div class="card wrap"><h3>Users</h3><p class="sm">Create logins in Supabase → Authentication → Users (Add user). They appear here as “pending”; assign role and departments.</p><table><tr><th>Email</th><th>Name</th><th>Role</th><th>Departments (Nodal / Data entry)</th><th></th></tr>${P.map(p=>`<tr data-u="${p.id}"><td>${h(p.email)}</td><td><input class="n" value="${h(p.full_name)}"></td><td><select class="r">${['pending','core','nodal','deo'].map(r=>`<option value="${r}" ${r==p.role?'selected':''}>${{pending:'Pending',core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry Operator'}[r]}</option>`).join('')}</select></td><td>${D.map(d=>`<label style="display:inline-block;margin-right:8px"><input type="checkbox" value="${d.id}" ${p.dept_ids.includes(d.id)?'checked':''}>${h(d.name)}</label>`).join('')}</td><td><button onclick="saveU(this.closest('tr'))">Save</button></td></tr>`).join('')}</table></div>
+  <div class="card"><h3>Departments</h3>${depts.map(d=>`<div class="row" data-d="${d.id}"><input value="${h(d.name)}"><label><input type="checkbox" ${d.active?'checked':''}> active</label><button class="g" onclick="saveD(this.parentElement)">Save</button></div>`).join('')}<div class="row"><input id="nd2" placeholder="New department"><button onclick="addD()">Add</button></div></div>`}
+async function saveU(tr){const{error}=await sb.from('profiles').update({full_name:tr.querySelector('.n').value,role:tr.querySelector('.r').value,dept_ids:[...tr.querySelectorAll('input[type=checkbox]:checked')].map(c=>c.value)}).eq('id',tr.dataset.u);alert(error?error.message:'Saved')}
+async function saveD(r){const{error}=await sb.from('departments').update({name:r.querySelector('input').value,active:r.querySelector('input[type=checkbox]').checked}).eq('id',r.dataset.d);alert(error?error.message:'Saved')}
+async function addD(){const{error}=await sb.from('departments').insert({name:$('nd2').value});if(error)return alert(error.message);boot()}
+boot();
+</script></body></html>
