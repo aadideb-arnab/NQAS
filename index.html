@@ -22,6 +22,14 @@ tr.click{cursor:pointer}tr.click:hover{background:#f2f6fc;box-shadow:inset 3px 0
 #modal{position:fixed;inset:0;background:#0006;display:none;overflow:auto;padding:24px}#modal>div{max-width:900px;margin:auto;background:var(--card);border-radius:16px;padding:20px;box-shadow:var(--sh2)}
 .ph{display:none}.sig{display:none}
 html{-webkit-text-size-adjust:100%}body{overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+/* Material sidebar */
+.ph.show{display:block}.pw{white-space:pre-wrap}
+nav{width:232px;transition:width .2s;position:sticky;top:0;max-height:100vh;overflow:hidden auto}
+nav button.nv{display:flex;align-items:center;gap:14px;white-space:nowrap}
+nav svg{width:22px;height:22px;fill:currentColor;flex-shrink:0}
+.nsep{font-size:11px;color:var(--mut);padding:12px 18px 2px;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
+body.nc nav{width:72px}body.nc nav button.nv{padding:9px 25px}body.nc .nl,body.nc .nsep{display:none}
+#mb{background:none;color:#444746;padding:8px;border-radius:50%;min-height:0;border:0;display:grid;place-items:center}#mb:hover{background:#e9eef6}#mb svg{width:24px;height:24px;fill:currentColor}
 @media(max-width:760px){
 body{font-size:14px}
 header{height:auto;flex-wrap:wrap;gap:8px;padding:10px 12px;position:sticky;top:0;z-index:20;background:var(--bg)}
@@ -54,6 +62,7 @@ td input,td select{min-width:110px}
 #modal>div{padding:14px;border-radius:12px;max-width:100%}
 .card[style*="max-width:340px"]{margin:24px auto!important}
 }
+@media(max-width:760px){#mb,.nsep{display:none}nav,body.nc nav{width:100%;position:static;max-height:none;overflow:auto hidden}body.nc nav button.nv{padding:8px 16px}body.nc .nl{display:inline}nav button.nv{gap:8px}}
 @media(max-width:380px){.chip{display:none}header b{font-size:16px}}
 @media print{header,nav,.np,#modal button,.row{display:none!important}body{background:#fff;color:#000;font-size:11px}.ph,.sig{display:block}#shell{display:block}main{margin:0;padding:0;box-shadow:none;border-radius:0}
 .card{box-shadow:none;padding:0}th{background:#eee!important;color:#000;position:static}td,th{border:1px solid #999}input,select{border:0;background:none;color:#000;appearance:none;padding:0}
@@ -65,6 +74,7 @@ body.pm main{display:none}body.pm #modal{display:block!important;position:static
 <script>
 const CFG={url:'https://tppukdafjwvvwkfeiilb.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwcHVrZGFmand2dndrZmVpaWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwODA2MjAsImV4cCI6MjEwODY1NjYyMH0.97gn3RkL7HzvUXTAyD6K5UME38Pfl-3-cEoYW6Y1JGs',hospital:'Chandannagar Sub-Divisional Hospital'};
 const sb=supabase.createClient(CFG.url,CFG.key);
+try{if(localStorage.nc)document.body.classList.add('nc')}catch(e){}
 const STAGES=['Gap Identified','Planned','Corrected','Implemented','Monitored','Reviewed','Re-assessed','Improved'];
 const ATYPES=['Internal','District','State','National','Surveillance'];
 let me,depts=[],A={q:''},qt;
@@ -89,15 +99,15 @@ async function boot(){
   const{data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).single();me=p;
   if(!me||me.role=='pending'){$('nav').innerHTML='';$('main').innerHTML='<div class="card">Your account is created but not yet activated. Ask the Core Committee to assign your role and department.<br><br><button onclick="logout()">Logout</button></div>';return}
   depts=(await sb.from('departments').select('*').order('name')).data||[];
-  const t=[['dash','Dashboard'],['assess','Assessment'],['gaps','Gaps & Actions'],['rep','Reports']];if(me.role=='core')t.push(['admin','Admin']);
-  $('nav').innerHTML=t.map(x=>`<button class="nv" id="n_${x[0]}" onclick="go('${x[0]}')">${x[1]}</button>`).join('');
-  $('hd').innerHTML=`<span class="logo">N</span><b>NQAS Portal</b><div class="search"><input id="q" type="search" placeholder="Search gaps by ref, text, owner, stage, department…" oninput="sq()"></div><span class="sp"></span><span class="chip">${h(me.full_name||me.email)} · ${{core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry'}[me.role]}</span><button class="g" onclick="logout()">Logout</button>`;
+  const t=NAVS.slice();if(me.role=='core')t.push('Settings',['admin','Admin']);
+  $('nav').innerHTML=t.map(x=>typeof x=='string'?`<div class="nsep">${x}</div>`:`<button class="nv" id="n_${x[0]}" title="${x[1]}" onclick="go('${x[0]}')"><svg viewBox="0 0 24 24"><path d="${IC[x[0]]}"/></svg><span class="nl">${x[1]}</span></button>`).join('');
+  $('hd').innerHTML=`<button id="mb" title="Expand / minimize menu" onclick="tg()"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button><span class="logo">N</span><b>NQAS Portal</b><div class="search"><input id="q" type="search" placeholder="Search gaps by ref, text, owner, stage, department…" oninput="sq()"></div><span class="sp"></span><span class="chip">${h(me.full_name||me.email)} · ${{core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry'}[me.role]}</span><button class="g" onclick="logout()">Logout</button>`;
   go('dash');
 }
 function login(){$('nav').innerHTML='';$('hd').innerHTML='<span class="logo">N</span><b>NQAS Portal</b>';$('main').innerHTML=`<div class="card" style="max-width:340px;margin:60px auto;box-shadow:var(--sh2)"><h3>NQAS Portal – Login</h3><p class="sm">Authorised users only.</p><p><input id="em" type="email" placeholder="Email" style="width:100%"></p><p><input id="pw" type="password" placeholder="Password" style="width:100%"></p><button onclick="doLogin()">Login</button> <span id="le" class="bad"></span></div>`}
 async function doLogin(){const{error}=await sb.auth.signInWithPassword({email:$('em').value,password:$('pw').value});if(error)$('le').textContent=error.message;else boot()}
 async function logout(){await sb.auth.signOut();location.reload()}
-function go(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.id=='n_'+v));({dash,assess,gaps,rep,admin}[v])().catch(e=>$('main').innerHTML='<div class="card bad">'+h(e.message)+'</div>')}
+function go(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.id=='n_'+v));({dash,assess,gaps,rep,admin,mem,mtg,res,out}[v])().catch(e=>$('main').innerHTML='<div class="card bad">'+h(e.message)+'</div>')}
 
 /* ---------- Dashboard ---------- */
 async function dash(){
@@ -196,5 +206,130 @@ async function admin(){
 async function saveU(tr){const{error}=await sb.from('profiles').update({full_name:tr.querySelector('.n').value,role:tr.querySelector('.r').value,dept_ids:[...tr.querySelectorAll('input[type=checkbox]:checked')].map(c=>c.value)}).eq('id',tr.dataset.u);alert(error?error.message:'Saved')}
 async function saveD(r){const{error}=await sb.from('departments').update({name:r.querySelector('input').value,active:r.querySelector('input[type=checkbox]').checked}).eq('id',r.dataset.d);alert(error?error.message:'Saved')}
 async function addD(){const{error}=await sb.from('departments').insert({name:$('nd2').value});if(error)return alert(error.message);boot()}
+/* ===== Material sidebar ===== */
+const IC={dash:'M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z',assess:'M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',gaps:'M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z',rep:'M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z',mem:'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',mtg:'M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z',res:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',out:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z',admin:'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z'};
+const NAVS=[['dash','Dashboard'],['assess','Assessment'],['gaps','Gaps & Actions'],['rep','Reports'],'Committee',['mem','Members'],['mtg','Meeting Orders'],['res','Resolutions'],'Outcome (Area H)',['out','Outcome Analysis']];
+function tg(){const c=document.body.classList.toggle('nc');try{localStorage.nc=c?1:''}catch(e){}}
+
+/* ===== shared helpers ===== */
+const core=()=>me.role=='core';
+const t12=t=>{if(!t)return'';const[a,b]=t.split(':');return((+a)%12||12)+':'+b+(+a<12?' AM':' PM')};
+const wd=d=>new Date(d+'T00:00').toLocaleDateString('en-GB',{weekday:'long'});
+const mlb=k=>new Date(k+'-01T00:00').toLocaleDateString('en-GB',{month:'short',year:'2-digit'});
+const fx=v=>v==null?'–':Math.round(v*100)/100;
+const phs=(t,s)=>ph(t,s).replace('class="ph"','class="ph show"');
+const dsel=(id,sel,first)=>`<select id="${id}">${first||''}${depts.filter(d=>d.active).map(d=>`<option value="${d.id}" ${d.id==sel?'selected':''}>${h(d.name)}</option>`).join('')}</select>`;
+const chk=(cls,m,on)=>`<label style="display:inline-block;margin:0 14px 6px 0"><input type="checkbox" class="${cls}" value="${m.id}" ${on?'checked':''}> ${h(m.name)} <span class="sm">(${h(m.role||m.designation||'')})</span></label>`;
+
+/* ===== Members ===== */
+async function mem(){
+  A.m=await all(()=>sb.from('members').select('*').order('name'));
+  $('main').innerHTML=(core()?`<div class="card"><h3>Add / edit member</h3><div class="row"><input type="hidden" id="mi"><input id="mn" placeholder="Name" size="22"><input id="md" placeholder="Designation" size="18">${dsel('mdp','','<option value="">Department…</option>')}<input id="mr" placeholder="Committee role (Chairperson / Member-Convenor / Member)" size="36"><input id="mp" type="tel" placeholder="Phone" size="14"></div><textarea id="mx" rows="2" placeholder="Roles & responsibilities"></textarea><div class="row" style="margin-top:8px"><button onclick="saveM()">Save member</button><button class="g" onclick="mem()">Clear</button></div></div>`:'')+
+  `<div class="card wrap"><div class="row"><h3 style="margin:0;flex:1">Committee members</h3>${dsel('mf','','<option value="">All departments</option>').replace('<select','<select onchange="mlist()"')}<button class="g" onclick="print()">Print</button></div>${ph('Committee Members','')}<div id="mt"></div></div>`;mlist()}
+function mlist(){const f=$('mf').value,q=(A.q||'').toLowerCase(),L=A.m.filter(m=>(!f||m.dept_id==f)&&(!q||[m.name,m.designation,m.role,m.phone,dn(m.dept_id)].join(' ').toLowerCase().includes(q)));
+  $('mt').innerHTML=`<table><tr><th>#</th><th>Name</th><th>Designation</th><th>Department</th><th>Role</th><th>Responsibilities</th><th>Phone</th>${core()?'<th class="np"></th>':''}</tr>${L.map((m,i)=>`<tr><td>${i+1}</td><td>${h(m.name)}</td><td>${h(m.designation)}</td><td>${h(dn(m.dept_id))}</td><td>${h(m.role)}</td><td class="pw">${h(m.responsibilities)}</td><td>${m.phone?`<a href="tel:${h(m.phone)}">${h(m.phone)}</a>`:''}</td>${core()?`<td class="np"><button class="g" onclick="editM(${m.id})">Edit</button> <button class="g" onclick="delM(${m.id})">Delete</button></td>`:''}</tr>`).join('')}</table><p class="sm">${L.length} member(s)</p>`}
+function editM(id){const m=A.m.find(x=>x.id==id);$('mi').value=m.id;$('mn').value=m.name;$('md').value=m.designation||'';$('mdp').value=m.dept_id||'';$('mr').value=m.role||'';$('mp').value=m.phone||'';$('mx').value=m.responsibilities||'';scrollTo(0,0)}
+async function saveM(){const o={name:$('mn').value.trim(),designation:$('md').value,dept_id:$('mdp').value||null,role:$('mr').value,phone:$('mp').value,responsibilities:$('mx').value};if(!o.name)return alert('Enter name');const i=$('mi').value;
+  const{error}=i?await sb.from('members').update(o).eq('id',i):await sb.from('members').insert(o);if(error)return alert(error.message);mem()}
+async function delM(id){if(!confirm('Delete this member?'))return;const{error}=await sb.from('members').delete().eq('id',id);if(error)return alert(error.message);mem()}
+
+/* ===== Meeting orders ===== */
+async function mtg(){
+  [A.M,A.m]=await Promise.all([all(()=>sb.from('meetings').select('*').order('meeting_date',{ascending:false})),all(()=>sb.from('members').select('*').order('name'))]);
+  const n=A.M.length+1;
+  $('main').innerHTML=(core()?`<div class="card"><h3>New meeting order</h3>
+  <div class="row"><input id="ot" value="Meeting of the NQAS Core Committee" size="40">Order No. <input id="on" value="NQAS/${new Date().getFullYear()}/${String(n).padStart(3,'0')}" size="16">Order date <input type="date" id="od" value="${today()}"></div>
+  <div class="row">Meeting date <input type="date" id="mdt"><input type="time" id="mtm" value="11:00"><input id="mv" size="34" placeholder="Venue" value="Conference Room, ${h(CFG.hospital)}"><input id="oi" size="22" placeholder="Issued by (designation)" value="Superintendent"></div>
+  <p>Agenda – one item per line (entered manually)<textarea id="oa" rows="5"></textarea></p>
+  <p><b>Invitees</b> <button class="g" onclick="document.querySelectorAll('.iv').forEach(c=>c.checked=true)">All</button> <button class="g" onclick="document.querySelectorAll('.iv').forEach(c=>c.checked=false)">None</button></p>
+  <div>${A.m.map(m=>chk('iv',m,1)).join('')||'<span class="sm">Add members first (Members module).</span>'}</div>
+  <div class="row" style="margin-top:10px"><button onclick="saveMtg()">Generate order</button></div></div>`:'')+
+  `<div class="card wrap"><h3>Meeting orders</h3><table><tr><th>Order No.</th><th>Order date</th><th>Meeting</th><th>Meeting date</th><th>Venue</th><th></th></tr>${A.M.map(m=>`<tr><td>${h(m.order_no)}</td><td>${fd(m.order_date)}</td><td>${h(m.title)}</td><td>${fd(m.meeting_date)}</td><td>${h(m.venue)}</td><td><button class="g" onclick="openOrder(${m.id})">Order</button> <button class="g" onclick="go('res');setTimeout(()=>openRes(${m.id}),400)">Resolution</button>${core()?` <button class="g" onclick="delMtg(${m.id})">Delete</button>`:''}</td></tr>`).join('')||'<tr><td colspan="6" class="sm">No orders yet</td></tr>'}</table></div>`}
+async function saveMtg(){if(!$('mdt').value)return alert('Select meeting date');
+  const o={title:$('ot').value,order_no:$('on').value,order_date:$('od').value,meeting_date:$('mdt').value,meeting_time:$('mtm').value,venue:$('mv').value,issued_by:$('oi').value,agenda:$('oa').value.split('\n').map(x=>x.trim()).filter(Boolean),invitees:[...document.querySelectorAll('.iv:checked')].map(c=>+c.value)};
+  const{data,error}=await sb.from('meetings').insert(o).select().single();if(error)return alert(error.message);await mtg();openOrder(data.id)}
+async function delMtg(id){if(!confirm('Delete this meeting order and its resolution?'))return;const{error}=await sb.from('meetings').delete().eq('id',id);if(error)return alert(error.message);mtg()}
+function openOrder(id){const m=A.M.find(x=>x.id==id),inv=A.m.filter(x=>(m.invitees||[]).includes(x.id));
+  $('mbox').innerHTML=`<div class="row np"><button onclick="pm()">Print order</button><button class="g" onclick="cm()">Close</button></div>
+  ${phs('Office Order',`Memo No.: <b>${h(m.order_no)}</b> &nbsp;|&nbsp; Date: <b>${fd(m.order_date)}</b>`)}
+  <p style="margin-top:14px"><b>Subject: ${h(m.title)}</b></p>
+  <p style="text-align:justify">In connection with the preparation for the National Quality Assurance Standards (NQAS) assessment of this hospital, a <b>${h(m.title)}</b> will be held on <b>${wd(m.meeting_date)}, ${fd(m.meeting_date)}</b>${m.meeting_time?' at <b>'+t12(m.meeting_time)+'</b>':''} at <b>${h(m.venue)}</b>.</p>
+  <p style="text-align:justify">All members mentioned below are requested to attend without fail, bringing updated records, data and compliance status of their respective departments.</p>
+  <h4>Agenda</h4><ol>${(m.agenda||[]).map(a=>`<li>${h(a)}</li>`).join('')}<li>Any other matter with permission of the Chair</li></ol>
+  <h4>Members / Invitees</h4><table><tr><th>#</th><th>Name</th><th>Designation</th><th>Department</th><th>Role</th><th>Phone</th></tr>${inv.map((x,i)=>`<tr><td>${i+1}</td><td>${h(x.name)}</td><td>${h(x.designation)}</td><td>${h(dn(x.dept_id))}</td><td>${h(x.role)}</td><td>${h(x.phone)}</td></tr>`).join('')}</table>
+  <div style="margin-top:50px;text-align:right"><b>${h(m.issued_by)}</b><br>${h(CFG.hospital)}</div>
+  <p class="sm">Copy to: All members concerned; Notice board; Office file.</p>`;
+  $('modal').style.display='block'}
+
+/* ===== Meeting resolutions ===== */
+async function res(){
+  [A.M,A.R]=await Promise.all([all(()=>sb.from('meetings').select('*').order('meeting_date',{ascending:false})),all(()=>sb.from('resolutions').select('meeting_id'))]);
+  $('main').innerHTML=`<div class="card wrap"><h3>Meeting resolutions</h3><table><tr><th>Meeting</th><th>Date</th><th>Order No.</th><th>Resolution</th><th></th></tr>${A.M.map(m=>`<tr><td>${h(m.title)}</td><td>${fd(m.meeting_date)}</td><td>${h(m.order_no)}</td><td>${A.R.some(r=>r.meeting_id==m.id)?'<span class="tag">Saved</span>':'–'}</td><td><button class="g" onclick="openRes(${m.id})">${core()?'Prepare / edit':'View'}</button></td></tr>`).join('')||'<tr><td colspan="5" class="sm">Create a meeting order first.</td></tr>'}</table></div><div id="re"></div>`}
+const ritem=(it,i)=>`<tr class="ri"><td>${i+1}</td><td><textarea class="ra" rows="2">${h(it.agenda)}</textarea></td><td><textarea class="rd" rows="2">${h(it.discussion)}</textarea></td><td><textarea class="rr" rows="2">${h(it.decision)}</textarea></td><td><select class="rp"><option value="">–</option>${A.inv.map(x=>`<option ${x.name==it.resp?'selected':''}>${h(x.name)}</option>`).join('')}</select></td><td><input type="date" class="rt" value="${it.due||''}"></td></tr>`;
+async function openRes(mid){
+  const m=A.M.find(x=>x.id==mid);A.rm=m;A.m=await all(()=>sb.from('members').select('*').order('name'));
+  const{data:r}=await sb.from('resolutions').select('*').eq('meeting_id',mid).maybeSingle();
+  A.inv=A.m.filter(x=>(m.invitees||[]).includes(x.id));
+  const items=r?.items?.length?r.items:(m.agenda||[]).map(a=>({agenda:a})),att=r?.attendance||A.inv.map(x=>x.id);
+  $('re').innerHTML=`<div class="card"><h3>${h(m.title)} – ${fd(m.meeting_date)}</h3><p><b>Attendance</b></p><div>${A.inv.map(x=>chk('at',x,att.includes(x.id))).join('')}</div>
+  <div class="row" style="margin-top:8px">Chaired by <input id="rc" size="32" placeholder="Name & designation" value="${h(r?.chair)}"></div>
+  <div class="wrap"><table id="rt2"><tr><th>#</th><th>Agenda</th><th>Discussion</th><th>Resolution / decision</th><th>Responsible</th><th>Target date</th></tr>${items.map(ritem).join('')}</table></div>
+  <div class="row" style="margin-top:8px">${core()?'<button onclick="saveRes()">Save</button><button class="g" onclick="addRI()">Add item</button>':''}<button class="g" onclick="resDoc()">Print resolution</button></div></div>`;
+  $('re').scrollIntoView()}
+function addRI(){$('rt2').insertAdjacentHTML('beforeend',ritem({},$('rt2').rows.length-1))}
+function colRes(){const q=(r,c)=>r.querySelector(c).value;return{items:[...document.querySelectorAll('.ri')].map(r=>({agenda:q(r,'.ra'),discussion:q(r,'.rd'),decision:q(r,'.rr'),resp:q(r,'.rp'),due:q(r,'.rt')})),attendance:[...document.querySelectorAll('.at:checked')].map(c=>+c.value),chair:$('rc').value}}
+async function saveRes(){const{error}=await sb.from('resolutions').upsert({meeting_id:A.rm.id,...colRes(),updated_at:new Date().toISOString()},{onConflict:'meeting_id'});alert(error?error.message:'Saved')}
+function resDoc(){const m=A.rm,c=colRes();
+  $('mbox').innerHTML=`<div class="row np"><button onclick="pm()">Print</button><button class="g" onclick="cm()">Close</button></div>
+  ${phs('Minutes & Resolution of Meeting',`${h(m.title)} &nbsp;|&nbsp; Order No. ${h(m.order_no)}`)}
+  <p>Meeting held on <b>${wd(m.meeting_date)}, ${fd(m.meeting_date)}</b>${m.meeting_time?' at '+t12(m.meeting_time):''} at ${h(m.venue)}. Chaired by <b>${h(c.chair)}</b>.</p>
+  <h4>Attendance</h4><table><tr><th>#</th><th>Name</th><th>Designation</th><th>Department</th><th>Present</th><th>Signature</th></tr>${A.inv.map((x,i)=>`<tr><td>${i+1}</td><td>${h(x.name)}</td><td>${h(x.designation)}</td><td>${h(dn(x.dept_id))}</td><td>${c.attendance.includes(x.id)?'Yes':'No'}</td><td></td></tr>`).join('')}</table>
+  <h4>Discussion & Resolutions</h4><table><tr><th>#</th><th>Agenda</th><th>Discussion</th><th>Resolution</th><th>Responsible</th><th>By</th></tr>${c.items.map((x,i)=>`<tr><td>${i+1}</td><td class="pw">${h(x.agenda)}</td><td class="pw">${h(x.discussion)}</td><td class="pw">${h(x.decision)}</td><td>${h(x.resp)}</td><td>${fd(x.due)}</td></tr>`).join('')}</table>
+  <div style="display:flex;justify-content:space-between;margin-top:50px"><div>Member-Convenor</div><div>Chairperson</div></div>`;
+  $('modal').style.display='block'}
+
+/* ===== Outcome (Area H) analysis ===== */
+const SEED=[['H1-01','Bed Occupancy Rate','H1 Productivity','Inpatient days','Available bed-days (beds × days)',100,'%','higher'],['H1-02','Bed Turnover Rate','H1 Productivity','Discharges (incl. deaths, LAMA)','Functional beds',1,'per bed','higher'],['H1-03','Referral Rate','H1 Productivity','Patients referred out','Total OPD + admissions',100,'%','lower'],['H2-01','Average Length of Stay','H2 Efficiency','Inpatient days','Discharges (incl. deaths, LAMA)',1,'days','lower'],['H2-02','Average OPD Waiting Time','H2 Efficiency','Total waiting minutes (sample)','Patients sampled',1,'min','lower'],['H3-01','Hospital Acquired Infection Rate','H3 Clinical Care & Safety','HAI cases','Patient days',1000,'per 1000 pt-days','lower'],['H3-02','Surgical Site Infection Rate','H3 Clinical Care & Safety','SSI cases','Surgeries done',100,'%','lower'],['H3-03','Surgical Safety Checklist Adherence','H3 Clinical Care & Safety','Surgeries with checklist','Total surgeries',100,'%','higher'],['H3-04','Hand Hygiene Compliance','H3 Clinical Care & Safety','Compliant opportunities','Opportunities observed',100,'%','higher'],['H3-05','Institutional Mortality Rate','H3 Clinical Care & Safety','Deaths','Admissions',100,'%','lower'],['H4-01','Patient Satisfaction Score','H4 Service Quality','Satisfied responses','Total responses',100,'%','higher']];
+async function seedI(){const{error}=await sb.from('outcome_indicators').insert(SEED.map(s=>({code:s[0],name:s[1],standard:s[2],num_label:s[3],den_label:s[4],multiplier:s[5],unit:s[6],direction:s[7]})));if(error)return alert(error.message);out()}
+async function out(){[A.I,A.O]=await Promise.all([all(()=>sb.from('outcome_indicators').select('*').eq('active',true).order('code')),all(()=>sb.from('outcome_data').select('*').order('month'))]);A.ot=A.ot||'an';drawO()}
+function drawO(){const T=[['an','Analysis'],['en','Data entry'],['in','Indicators']];
+  $('main').innerHTML=`<div class="card"><div class="row">${T.map(t=>`<button class="${A.ot==t[0]?'':'g'}" onclick="A.ot='${t[0]}';drawO()">${t[1]}</button>`).join('')}</div>${A.I.length?'':`<p>No indicators defined yet. ${core()?'<button onclick="seedI()">Load standard Area H indicators</button>':'Ask the Core Committee to set them up.'}</p>`}</div><div id="oc"></div>`;
+  if(A.I.length)({an:oAn,en:oEn,in:oIn}[A.ot])()}
+const ok=(i,v)=>i.target==null||v==null?null:(i.direction=='higher'?v>=+i.target:v<=+i.target);
+const okTag=o=>o==null?'–':o?'<span class="tag" style="background:#e6f4ea;color:#137333">Met</span>':'<span class="tag" style="background:#fce8e6;color:#c5221f">Not met</span>';
+function ser(i,dp,f,t){const m={};A.O.filter(r=>r.indicator_id==i.id&&(!dp||r.dept_id==dp)&&r.month.slice(0,7)>=f&&r.month.slice(0,7)<=t).forEach(r=>{const k=r.month.slice(0,7);m[k]=m[k]||{n:0,d:0};m[k].n+=+r.numerator;m[k].d+=+r.denominator});return Object.keys(m).sort().map(k=>({k,n:m[k].n,d:m[k].d,v:m[k].d?m[k].n/m[k].d*i.multiplier:null}))}
+function trd(s,i){const v=s.filter(x=>x.v!=null).map(x=>x.v);if(v.length<2)return null;const k=Math.min(3,Math.floor(v.length/2)),m=x=>x.reduce((p,q)=>p+q,0)/x.length,df=m(v.slice(-k))-m(v.slice(-2*k,-k));return Math.abs(df)<1e-9?{t:'Stable'}:{t:(df>0)==(i.direction=='higher')?'Improving':'Worsening'}}
+function chart(s,i){const p=s.filter(x=>x.v!=null);if(!p.length)return'<p class="sm">No data in the selected period.</p>';
+  const W=640,H=220,L=48,B=28,T=14,R=16,tg=i.target!=null?[+i.target]:[],vs=p.map(x=>x.v).concat(tg);let mn=Math.min(...vs),mx=Math.max(...vs);if(mn==mx){mn-=1;mx+=1}const pd=(mx-mn)*.12;mn-=pd;mx+=pd;
+  const X=k=>L+(W-L-R)*(p.length>1?k/(p.length-1):.5),Y=v=>T+(H-T-B)*(1-(v-mn)/(mx-mn));
+  const grid=[0,1,2,3].map(g=>{const v=mn+(mx-mn)*g/3;return`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#e8eaed"/><text x="${L-6}" y="${Y(v)+4}" font-size="11" text-anchor="end" fill="#5f6368">${fx(v)}</text>`}).join('');
+  return`<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:720px">${grid}${tg.length?`<line x1="${L}" x2="${W-R}" y1="${Y(tg[0])}" y2="${Y(tg[0])}" stroke="#d93025" stroke-dasharray="6 4"/><text x="${W-R}" y="${Y(tg[0])-4}" font-size="11" text-anchor="end" fill="#d93025">Target ${tg[0]}</text>`:''}<polyline fill="none" stroke="#0b57d0" stroke-width="2.5" points="${p.map((x,k)=>X(k)+','+Y(x.v)).join(' ')}"/>${p.map((x,k)=>`<circle cx="${X(k)}" cy="${Y(x.v)}" r="4" fill="#0b57d0"/>${p.length<=12||k%2==0?`<text x="${X(k)}" y="${H-8}" font-size="11" text-anchor="middle" fill="#5f6368">${mlb(x.k)}</text>`:''}`).join('')}</svg>`}
+function oAn(){
+  const I=A.I.find(x=>x.id==A.ai)||A.I[0];A.ai=I.id;const d0=new Date();d0.setDate(1);d0.setMonth(d0.getMonth()-11);
+  A.ad=A.ad||'';A.af=A.af||d0.toISOString().slice(0,7);A.at2=A.at2||today().slice(0,7);
+  const dp=A.ad,f=A.af,t=A.at2,s=ser(I,dp,f,t),vs=s.filter(x=>x.v!=null),last=vs[vs.length-1],avg=vs.length?vs.reduce((p,q)=>p+q.v,0)/vs.length:null,tr=trd(s,I),mt=vs.filter(x=>ok(I,x.v)).length,sub=(dp?h(dn(dp)):'All departments combined')+' | '+mlb(f)+' to '+mlb(t);
+  const ov=A.I.map(i=>{const q=ser(i,dp,f,t).filter(x=>x.v!=null),l=q[q.length-1],r=trd(q,i);return`<tr class="click" onclick="A.ai=${i.id};oAn()"><td>${h(i.code)}</td><td>${h(i.name)}</td><td>${l?fx(l.v)+' '+h(i.unit):'–'}</td><td>${i.target??'–'}</td><td>${l?okTag(ok(i,l.v)):'–'}</td><td>${r?r.t:'–'}</td></tr>`}).join('');
+  const cmp=!dp&&last?depts.filter(d=>d.active).concat([{id:'ALL',name:'Hospital-wide'}]).map(d=>{const r=A.O.find(x=>x.indicator_id==I.id&&x.dept_id==d.id&&x.month.slice(0,7)==last.k),v=r&&+r.denominator?r.numerator/r.denominator*I.multiplier:null;return v==null?'':`<tr><td>${h(d.name)}</td><td>${fx(v)}</td><td>${okTag(ok(I,v))}</td></tr>`}).join(''):'';
+  const nar=last?`<b>${h(I.name)}</b> (${sub}): latest value ${fx(last.v)} ${h(I.unit)} in ${mlb(last.k)}; average ${fx(avg)} over ${vs.length} month(s); trend ${tr?tr.t.toLowerCase():'cannot be assessed (needs at least 2 months)'}. ${I.target!=null?`Target ${I.target} ${h(I.unit)} (${I.direction=='higher'?'higher is better':'lower is better'}) was met in ${mt} of ${vs.length} month(s).${ok(I,last.v)===false?' The latest value is off target – root-cause analysis and a corrective-action entry in Gaps &amp; Actions is advised.':''}`:'No target is set for this indicator.'}`:'No data entered for the selected period.';
+  $('oc').innerHTML=`<div class="card"><div class="row"><select onchange="A.ai=this.value;oAn()">${A.I.map(i=>`<option value="${i.id}" ${i.id==I.id?'selected':''}>${h(i.code)} – ${h(i.name)}</option>`).join('')}</select><select onchange="A.ad=this.value;oAn()"><option value="">All departments</option>${mine().map(d=>`<option value="${d.id}" ${d.id==dp?'selected':''}>${h(d.name)}</option>`).join('')}</select>From <input type="month" value="${f}" onchange="A.af=this.value;oAn()"> To <input type="month" value="${t}" onchange="A.at2=this.value;oAn()"><button class="g" onclick="print()">Print</button></div>
+  ${ph('Outcome (Area H) Analysis',sub)}
+  <div class="row"><span class="chip">Latest: <b>${last?fx(last.v)+' '+h(I.unit):'–'}</b></span><span class="chip">Average: <b>${fx(avg)}</b></span><span class="chip">Target: <b>${I.target??'–'}</b> ${okTag(last?ok(I,last.v):null)}</span><span class="chip">Trend: <b>${tr?tr.t:'–'}</b></span></div>
+  ${chart(s,I)}
+  <div class="wrap"><table><tr><th>Month</th><th>${h(I.num_label)}</th><th>${h(I.den_label)}</th><th>Value (${h(I.unit)})</th><th>vs Target</th></tr>${s.map(x=>`<tr><td>${mlb(x.k)}</td><td>${fx(x.n)}</td><td>${fx(x.d)}</td><td><b>${fx(x.v)}</b></td><td>${okTag(ok(I,x.v))}</td></tr>`).join('')}</table></div>
+  <h3 style="margin-top:16px">Analysis & inference</h3><p>${nar}</p>
+  ${cmp?`<h3>Department comparison – ${mlb(last.k)}</h3><div class="wrap"><table><tr><th>Department</th><th>Value</th><th>vs Target</th></tr>${cmp}</table></div>`:''}
+  <h3 style="margin-top:16px">All Area H indicators – latest status</h3><div class="wrap"><table><tr><th>Code</th><th>Indicator</th><th>Latest</th><th>Target</th><th>Status</th><th>Trend</th></tr>${ov}</table></div><p class="sm np">Click an indicator row to analyse it.</p>${sig()}</div>`}
+function oEn(){const D=core()?[['ALL','Hospital-wide'],...depts.filter(d=>d.active).map(d=>[d.id,d.name])]:mine().map(d=>[d.id,d.name]);A.od2=A.od2||D[0][0];A.om=A.om||today().slice(0,7);
+  $('oc').innerHTML=`<div class="card wrap"><div class="row"><select onchange="A.od2=this.value;oEn()">${D.map(d=>`<option value="${d[0]}" ${d[0]==A.od2?'selected':''}>${h(d[1])}</option>`).join('')}</select><input type="month" value="${A.om}" onchange="A.om=this.value;oEn()"><button onclick="saveO()">Save all</button></div>
+  <table><tr><th>Indicator</th><th>Numerator</th><th>Denominator</th><th>Value</th></tr>${A.I.map(i=>{const r=A.O.find(x=>x.indicator_id==i.id&&x.dept_id==A.od2&&x.month.slice(0,7)==A.om)||{};return`<tr data-i="${i.id}" data-m="${i.multiplier}"><td><b>${h(i.name)}</b><div class="sm">${h(i.standard)}</div></td><td><input type="number" step="any" class="en" value="${r.numerator??''}" oninput="calcO(this.closest('tr'))"><div class="sm">${h(i.num_label)}</div></td><td><input type="number" step="any" class="ed" value="${r.denominator??''}" oninput="calcO(this.closest('tr'))"><div class="sm">${h(i.den_label)}</div></td><td class="ev"></td></tr>`}).join('')}</table></div>`;
+  document.querySelectorAll('#oc tr[data-i]').forEach(calcO)}
+function calcO(tr){const n=tr.querySelector('.en').value,d=tr.querySelector('.ed').value;tr.querySelector('.ev').textContent=n!==''&&+d>0?fx(n/d*tr.dataset.m):'–'}
+async function saveO(){const rows=[...document.querySelectorAll('#oc tr[data-i]')].map(tr=>({indicator_id:+tr.dataset.i,dept_id:String(A.od2),month:A.om+'-01',numerator:tr.querySelector('.en').value,denominator:tr.querySelector('.ed').value})).filter(r=>r.numerator!==''&&r.denominator!=='');
+  if(!rows.length)return alert('Nothing to save');if(rows.some(r=>!(+r.denominator>0)))return alert('Denominator must be greater than 0');
+  rows.forEach(r=>{r.numerator=+r.numerator;r.denominator=+r.denominator;r.entered_by=me.full_name||me.email;r.updated_at=new Date().toISOString()});
+  const{error}=await sb.from('outcome_data').upsert(rows,{onConflict:'indicator_id,dept_id,month'});if(error)return alert(error.message);alert('Saved '+rows.length+' indicator(s)');out()}
+function oIn(){const c=core();$('oc').innerHTML=`<div class="card wrap"><table><tr><th>Code</th><th>Indicator</th><th>Standard</th><th>Formula</th><th>Better</th><th>Target</th><th></th></tr>${A.I.map(i=>`<tr data-i="${i.id}"><td>${h(i.code)}</td><td>${h(i.name)}</td><td>${h(i.standard)}</td><td class="sm">(${h(i.num_label)} ÷ ${h(i.den_label)}) × ${i.multiplier} ${h(i.unit)}</td><td><select class="id" ${c?'':'disabled'}>${opts(['higher','lower'],i.direction)}</select></td><td><input class="it" type="number" step="any" value="${i.target??''}" ${c?'':'disabled'} style="width:90px"></td><td>${c?'<button class="g" onclick="saveI(this.closest(\'tr\'))">Save</button>':''}</td></tr>`).join('')}</table><p class="sm">Set targets as per the NQAS checklist / state benchmark.</p></div>`}
+async function saveI(tr){const t=tr.querySelector('.it').value,{error}=await sb.from('outcome_indicators').update({direction:tr.querySelector('.id').value,target:t===''?null:+t}).eq('id',tr.dataset.i);if(error)return alert(error.message);out()}
+
 boot();
 </script></body></html>
