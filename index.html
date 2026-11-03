@@ -71,10 +71,10 @@ body.pm main{display:none}body.pm #modal{display:block!important;position:static
 .ph{text-align:center;margin-bottom:8px}.ph h2,.ph h3{margin:2px}tr{break-inside:avoid}}
 @page{size:A4;margin:8mm 13mm 14mm 17mm}@page{@bottom-right{content:"Page " counter(page) " of " counter(pages);font:italic 8pt "Book Antiqua",Palatino,serif}}@page land{size:A4 landscape;margin:8mm}
 :root{--sh3:0 8px 24px rgba(60,64,67,.22)}
-@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}@keyframes pop{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:none}}@keyframes fd{from{opacity:0}to{opacity:1}}@keyframes rot{to{transform:rotate(360deg)}}
-main>*{animation:fi .38s ease both}main>*:nth-child(2){animation-delay:.06s}main>*:nth-child(3){animation-delay:.12s}
-#modal{animation:fd .2s}#modal>div{animation:pop .28s cubic-bezier(.2,.8,.2,1)}
-.card{transition:box-shadow .2s}.card:hover{box-shadow:var(--sh2)}.logo{animation:pop .6s}
+@keyframes fi{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}@keyframes pop{from{opacity:0;transform:scale(.985) translate3d(0,6px,0)}to{opacity:1;transform:none}}@keyframes fd{from{opacity:0}to{opacity:1}}@keyframes rot{to{transform:rotate(360deg)}}
+main>*{animation:fi .5s cubic-bezier(.22,1,.36,1) both}main>*:nth-child(2){animation-delay:.04s}main>*:nth-child(3){animation-delay:.08s}
+#modal{animation:fd .3s ease}#modal>div{animation:pop .4s cubic-bezier(.22,1,.36,1)}
+.card{transition:box-shadow .2s}.card:hover{box-shadow:var(--sh2)}.logo{animation:pop .8s cubic-bezier(.22,1,.36,1)}
 button{transition:box-shadow .2s,background .2s,transform .15s}button:hover{transform:translateY(-1px);box-shadow:var(--sh2)}button:active{transform:none;box-shadow:none}
 .chip{transition:transform .2s,box-shadow .2s}.chip:hover{transform:translateY(-2px);box-shadow:var(--sh2)}tr.click{transition:background .15s,box-shadow .15s}
 textarea{field-sizing:content;min-height:3em}
@@ -161,11 +161,98 @@ table.dt tr.xp{cursor:pointer;font-weight:600;background:var(--tint)}table.dt tr
 .ok{color:#188038}.mid{color:#b06000}.lo{color:#c5221f}td.n:not(.ok):not(.mid):not(.lo){color:inherit}.xs b{font-weight:600}.kp b.ok,.kp b.mid,.kp b.lo{-webkit-text-fill-color:initial}
 @media print{table.dt tr.xc{display:table-row!important}}
 </style>
-</head><body>
+<style>
+.gkc{padding:10px 12px}.gkr{margin-bottom:6px;gap:6px}.gkr select{padding:3px 8px;font-size:13px;height:30px}
+.gkp{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}.gkchip{padding:2px 10px;font-size:12px;border-radius:12px;background:#fff;color:#1967d2;border:1px solid var(--bd);box-shadow:none}.gkchip b{margin-left:2px}.gkchip.on{background:var(--tint);border-color:#1a73e8}.gkchip:hover{background:var(--tint)}
+table.gkt{display:table;width:100%;table-layout:fixed;overflow:visible}table.gkt th,table.gkt td{padding:3px 8px;font-size:13px;min-width:0;vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
+table.gkt th{top:0;position:sticky;z-index:1}table.gkt td.gkg{color:#202124}
+.gks{padding:1px 8px;font-size:11px;white-space:nowrap}
+.gkpr{display:inline-block;font-size:11px;padding:0 7px;border-radius:9px;line-height:18px}.gkpr.hi{background:#fce8e6;color:#c5221f}.gkpr.md{background:#fef7e0;color:#b06000}.gkpr.lo{background:#e6f4ea;color:#137333}
+@media(max-width:700px){table.gkt{table-layout:auto}table.gkt td.gkg{max-width:220px}}
+</style>
+<style>
+.gkpg{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:8px}.gkb{display:flex;align-items:center;gap:6px}.gkpg button{padding:3px 10px;font-size:12px}.gkpg button:disabled{opacity:.4;cursor:default;box-shadow:none}.gkpg select{padding:2px 6px;font-size:12px;height:26px}
+@media print{.gkpg{display:none}}
+</style>
+<style>
+.adc{padding:10px 12px}.adc h3{font-size:16px}
+table.adt{display:table;width:100%;table-layout:fixed;overflow:visible}table.adt th,table.adt td{padding:4px 8px;min-width:0;font-size:13px;vertical-align:top}table.adt th:nth-child(1){width:190px}table.adt th:nth-child(2){width:150px}table.adt th:nth-child(3){width:175px}table.adt th:nth-child(5){width:64px}
+table.adt .ade{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-top:9px}
+.adc input:not([type=checkbox]),.adc select{padding:3px 8px;font-size:13px;height:30px;width:100%;box-sizing:border-box}
+.adb{padding:3px 14px;font-size:12px;height:28px}
+.adx summary{cursor:pointer;list-style:none;padding:5px 10px;border:1px solid var(--bd);border-radius:8px;font-size:13px;background:#fff;display:flex;justify-content:space-between;align-items:center}.adx summary::-webkit-details-marker{display:none}.adx summary::after{content:'▾';color:var(--ac);margin-left:8px;font-size:12px}.adx[open] summary{border-color:#1a73e8;background:var(--tint)}.adx[open] summary::after{content:'▴'}
+.adk{margin-top:6px;padding:6px 8px;border:1px solid var(--bd);border-radius:8px;background:#fafcff;max-height:220px;overflow:auto}.adk .dg{padding:3px 8px;margin:3px 0}.adk label{font-size:12.5px;margin-right:6px!important;white-space:nowrap}.adk button.g{padding:0 8px;font-size:11px;height:20px;margin:0 6px}
+.adg{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:8px 16px;align-items:start}.adgp{border:1px solid var(--bd);border-radius:8px;padding:4px 8px;background:#fcfdff}
+.adr{display:flex;align-items:center;gap:6px;padding:2px 0}.adr>input{flex:1 1 130px;min-width:0}.adr>select{flex:0 0 120px;width:120px}.adr label{white-space:nowrap;font-size:12.5px;display:flex;align-items:center;gap:3px}.adr.w{padding-left:16px;position:relative}.adr.w::before{content:'↳';position:absolute;left:2px;color:var(--mut)}
+.adn input{width:190px!important}.adn select{width:150px!important}
+@media(max-width:700px){table.adt{table-layout:auto}.adg{grid-template-columns:1fr}}
+</style>
+<style>
+@media screen{.rsg .sig{display:none}table.rpt{table-layout:auto}table.rpt th,table.rpt td{padding:3px 8px;font-size:12.5px;line-height:1.35;min-width:0}table.rpt th{position:static}.ph{margin-bottom:4px}}
+</style>
+<style>
+@media screen{tr[data-pgh]{display:none}}
+@media print{tr[data-pgh]{display:table-row!important}}
+</style>
+<style>
+:root{--ease:cubic-bezier(.22,1,.36,1)}
+.card,button,.chip,tr.click,.pq,nav button.nv{transition-timing-function:var(--ease)}
+/* splash */
+#ldr{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 20%,#e8f0fe,transparent 55%),radial-gradient(circle at 75% 80%,#e6f4ea,transparent 55%),#f8fbff;transition:opacity .6s var(--ease),visibility .6s,transform .6s var(--ease)}
+#ldr.out{opacity:0;visibility:hidden;pointer-events:none;transform:scale(1.02)}
+.lg{display:flex;flex-direction:column;align-items:center;gap:12px;animation:lgin .8s var(--ease) both}
+.lg b{font-size:20px;font-weight:600;color:#1f3b73;letter-spacing:.02em}.lg small{color:var(--mut);font-size:12.5px}
+.lgl{width:68px;height:68px;border-radius:20px;font-size:32px;animation:breathe 2.4s ease-in-out infinite}
+.lbar{width:170px;height:4px;border-radius:4px;background:#dbe5f7;overflow:hidden;position:relative}.lbar i{position:absolute;top:0;bottom:0;width:45%;border-radius:4px;background:linear-gradient(90deg,#4285f4,#34a853,#fbbc04);animation:slide 1.3s cubic-bezier(.65,0,.35,1) infinite}
+@keyframes lgin{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
+@keyframes breathe{0%,100%{transform:scale(1);box-shadow:0 6px 16px rgba(66,133,244,.25)}50%{transform:scale(1.06);box-shadow:0 10px 26px rgba(66,133,244,.4)}}
+@keyframes slide{0%{left:-45%}100%{left:100%}}
+/* top progress bar */
+#tb{position:fixed;top:0;left:0;right:0;height:3px;z-index:9999;pointer-events:none;opacity:0;transition:opacity .35s ease}
+#tb i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4285f4,#34a853,#fbbc04);border-radius:0 3px 3px 0;box-shadow:0 0 8px rgba(66,133,244,.6)}
+/* page loader */
+#pl{position:fixed;inset:0;z-index:9990;display:flex;align-items:center;justify-content:center;background:rgba(248,251,255,.6);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s ease,visibility .3s}
+#pl.on{opacity:1;visibility:visible}
+.lsp{width:38px;height:38px;border-radius:50%;border:3px solid #d2e3fc;border-top-color:#1a73e8;border-right-color:#34a853;animation:rot .9s cubic-bezier(.5,.2,.5,.8) infinite}
+@media print{#ldr,#tb,#pl{display:none!important}}
+</style>
+<style>
+/* ---- Orders / Resolutions ---- */
+.ordn{padding:0}.ordn>summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none;padding:10px 14px}.ordn>summary::-webkit-details-marker{display:none}.ordn>summary h3{margin:0;font-size:16px}.ordn>summary .sm{flex:1}
+.ordp{padding:3px 14px;border-radius:16px;background:var(--ac);color:#fff;font-size:12.5px;font-weight:500;white-space:nowrap}.ordn[open] .ordp{background:#e8f0fe;color:#1967d2}.ordn[open]>summary{border-bottom:1px solid #e8eaed}.ordn[open] .ordp::after{content:' · close'}
+.ordn>.og,.ordn>.pkb,.ordn>.row{margin-left:14px;margin-right:14px}.ordn>.row{padding-bottom:12px}
+.og{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 12px;margin-top:10px;align-items:end}.og-e{padding:8px 10px;border:1px dashed #aecbfa;border-radius:10px;background:#f8fbff}.og-e:not(:has(>.f:not([style*="none"]))){display:none}
+.f{display:flex;flex-direction:column;gap:2px;min-width:0}.f>span:first-child{font-size:12px;color:var(--mut);font-weight:500}.f>span em{font-style:normal;font-weight:400;opacity:.8}
+.f-2{grid-column:span 2}.f-w{grid-column:1/-1}.f2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.og input:not([type=checkbox]),.og select,.og textarea{width:100%;box-sizing:border-box;padding:4px 9px;font-size:13px}.og input,.og select{height:32px}.og textarea{resize:vertical;min-height:34px;line-height:1.4}
+@media(max-width:560px){.f-2{grid-column:1/-1}.f2{grid-template-columns:1fr}}
+.pkl{max-height:230px;overflow:auto;border:1px solid #e8eaed;border-radius:8px}.pkl table{display:table;width:100%;overflow:visible}.pk th,.pk td{padding:3px 8px;font-size:12.5px;min-width:0;vertical-align:middle}.pk th{position:sticky;top:0}.pkb .row{gap:6px}.pkb input,.pkb select{height:30px;padding:3px 8px;font-size:13px}.pk td input[type=text],.pk td input:not([type]){width:100%;min-width:140px}
+.pkb h4{font-size:14px}.pkb .g,.ordn .row button{padding:3px 12px;font-size:12.5px}
+.ordc{padding:10px 12px}.ordc h3{font-size:16px}
+table.rtab{display:table;width:100%;overflow:visible}table.rtab th,table.rtab td{padding:4px 8px;font-size:13px;vertical-align:middle;min-width:0}table.rtab td.t{font-weight:500}table.rtab td.ra2{text-align:right;white-space:nowrap;width:1%}table.rtab td.ra2 button{padding:2px 12px;font-size:12px;height:26px;margin-left:4px}
+@media(max-width:720px){
+ table.rtab{display:block}table.rtab tr:has(th){display:none}
+ table.rtab tr{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,max-content));gap:1px 14px;padding:8px 2px;border-bottom:1px solid #e8eaed}
+ table.rtab td{display:block;padding:0;border:0;font-size:12.5px;color:#3c4043}table.rtab td[data-l]::before{content:attr(data-l) ': ';color:var(--mut);font-size:11px}
+ table.rtab td.t{order:-1;grid-column:1/-1;font-size:14px;color:#202124;padding-bottom:2px}table.rtab td.ra2{grid-column:1/-1;text-align:left;width:auto;padding-top:5px}table.rtab td.ra2 button{margin:0 6px 0 0}table.rtab tr{width:100%;box-sizing:border-box}table.rtab td.ra2 button{height:28px;padding:2px 14px}table.rtab td[data-l]{white-space:nowrap}
+}
+</style>
+<style>
+/* pop-up records / print previews must sit above the sticky top bar */
+#modal{z-index:200}
+@media print{#modal{z-index:auto}}
+</style>
+</head><body><div id="tb"><i></i></div><div id="pl"><span class="lsp"></span></div><div id="ldr"><div class="lg"><span class="logo lgl">N</span><b>NQAS Portal</b><span class="lbar"><i></i></span><small>Loading, please wait…</small></div></div><script>setTimeout(function(){var e=document.getElementById('ldr');if(e)e.className+=' out'},20000)</script>
 <header id="hd" class="np"></header><div id="shell"><nav id="nav" class="np"></nav><main id="main"></main></div><div id="modal" onclick="if(event.target==this)cm()"><div id="mbox"></div></div>
 <script>
 const CFG={url:'https://tppukdafjwvvwkfeiilb.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwcHVrZGFmand2dndrZmVpaWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwODA2MjAsImV4cCI6MjEwODY1NjYyMH0.97gn3RkL7HzvUXTAyD6K5UME38Pfl-3-cEoYW6Y1JGs',hospital:'Chandannagar Sub-Divisional Hospital'};
-const sb=supabase.createClient(CFG.url,CFG.key);
+/* ===== global loading indicator ===== */
+let _ln=0,_ld,_lt;const _tb=()=>document.querySelector('#tb i'),_tbe=()=>document.getElementById('tb'),_pl=()=>document.getElementById('pl');
+function ldStart(){clearTimeout(_ld);if(_ln++)return;const b=_tb(),t=_tbe();if(!b)return;clearTimeout(_lt);b.style.transition='none';b.style.width='0';void b.offsetWidth;t.style.opacity=1;b.style.transition='width 9s cubic-bezier(.08,.6,.2,1)';b.style.width='82%';_lt=setTimeout(()=>_pl()&&_pl().classList.add('on'),300)}
+function ldDone(){if(--_ln>0)return;_ln=0;clearTimeout(_ld);_ld=setTimeout(()=>{clearTimeout(_lt);const b=_tb(),t=_tbe();_pl()&&_pl().classList.remove('on');if(!b)return;b.style.transition='width .3s var(--ease)';b.style.width='100%';setTimeout(()=>{t.style.opacity=0},300)},120)}
+function hideSplash(){const e=document.getElementById('ldr');if(!e||e.classList.contains('out'))return;setTimeout(()=>{e.classList.add('out');setTimeout(()=>e.remove(),800)},Math.max(0,800-performance.now()))}
+setTimeout(hideSplash,20000);
+const sb=supabase.createClient(CFG.url,CFG.key,{global:{fetch:(u,o)=>{ldStart();return fetch(u,o).finally(ldDone)}}});
 try{if(localStorage.nc)document.body.classList.add('nc')}catch(e){}
 const STAGES=['Gap Identified','Planned','Corrected','Implemented','Monitored','Reviewed','Re-assessed','Improved'];
 const ATYPES=['Internal','District','State','National','Surveillance'];
@@ -189,7 +276,8 @@ const sig=()=>`<div class="sig"><div>Prepared by (Dept. Nodal)</div><div>Verifie
 function cm(){$('modal').style.display='none'}
 function pm(){document.body.classList.add('pm');print();document.body.classList.remove('pm')}
 
-async function boot(){
+async function boot(){try{await boot0()}finally{hideSplash()}}
+async function boot0(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session)return login();
   const{data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).single();me=p;
@@ -198,12 +286,12 @@ async function boot(){
   const t=NAVS.slice();if(me.role=='core')t.push('Settings',['admin','Admin']);
   $('nav').innerHTML=t.map(x=>typeof x=='string'?`<div class="nsep">${x}</div>`:`<button class="nv" id="n_${x[0]}" title="${x[1]}" onclick="go('${x[0]}')"><svg viewBox="0 0 24 24"><path d="${IC[x[0]]}"/></svg><span class="nl">${x[1]}</span></button>`).join('');
   $('hd').innerHTML=`<button id="mb" title="Expand / minimize menu" onclick="tg()"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button><span class="logo">N</span><b>NQAS Portal</b><div class="search"><input id="q" type="search" placeholder="Search gaps by ref, text, owner, stage, department…" oninput="sq()"></div><span class="sp"></span><span class="chip">${h(me.full_name||me.email)} · ${{core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry'}[me.role]}</span><button class="g" onclick="logout()">Logout</button>`;
-  go('dash');
+  await go('dash');
 }
 function login(){$('nav').innerHTML='';$('hd').innerHTML='<span class="logo">N</span><b>NQAS Portal</b>';$('main').innerHTML=`<div class="card" style="max-width:340px;margin:60px auto;box-shadow:var(--sh2)"><h3>NQAS Portal – Login</h3><p class="sm">Authorised users only.</p><p><input id="em" type="email" placeholder="Email" style="width:100%"></p><p><input id="pw" type="password" placeholder="Password" style="width:100%"></p><button onclick="doLogin()">Login</button> <span id="le" class="bad"></span></div>`}
 async function doLogin(){const{error}=await sb.auth.signInWithPassword({email:$('em').value,password:$('pw').value});if(error)$('le').textContent=error.message;else boot()}
 async function logout(){await sb.auth.signOut();location.reload()}
-function go(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.id=='n_'+v));({dash,assess,gaps,rep,admin,mem,mtg,res,out,pdca}[v])().catch(e=>$('main').innerHTML='<div class="card bad">'+h(e.message)+'</div>')}
+function go(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.id=='n_'+v));return ({dash,assess,gaps,rep,admin,mem,mtg,res,out,pdca}[v])().catch(e=>$('main').innerHTML='<div class="card bad">'+h(e.message)+'</div>')}
 
 /* ---------- Dashboard ---------- */
 async function dash(){
@@ -287,12 +375,18 @@ async function genGaps(){
 
 /* ---------- Gaps ---------- */
 async function gaps(){
-  A.g=await all(()=>sb.from('gaps').select('*,checkpoints(me_ref,checkpoint,area,standard,mov)').order('identified_on',{ascending:false}).order('id'));
-  $('main').innerHTML=`<div class="card"><div class="row"><select id="gd" onchange="gl()">${dopts('',1)}</select><select id="gs" onchange="gl()"><option value="">All stages</option>${opts(STAGES)}</select><select id="ga" onchange="gl()"><option value="">All areas</option>${'ABCDEFGH'.split('').map(x=>`<option>${x}</option>`).join('')}</select></div><div class="wrap" id="gt"></div></div>`;gl()}
+  A.g=await all(()=>sb.from('gaps').select('*,checkpoints(me_ref,checkpoint,area,standard,mov)').order('identified_on',{ascending:false}).order('id'));A.pg=1;
+  $('main').innerHTML=`<div class="card gkc"><div class="row gkr"><select id="gd" onchange="gl()">${dopts('',1)}</select><select id="gs" onchange="gl()"><option value="">All stages</option>${opts(STAGES)}</select><select id="ga" onchange="gl()"><option value="">All areas</option>${'ABCDEFGH'.split('').map(x=>`<option>${x}</option>`).join('')}</select><span id="gkn" class="sm" style="margin-left:auto"></span></div><div class="gkp" id="gkp"></div><div class="wrap" id="gt"></div></div>`;gl()}
 function sq(){clearTimeout(qt);qt=setTimeout(()=>{A.q=$('q').value.trim().toLowerCase();if($('gt'))gl();else if(A.q)go('gaps')},250)}
-function gl(){const d=$('gd').value,s=$('gs').value,a=$('ga').value,w=(A.q||'').split(/\s+/).filter(Boolean);
+function gl(keep){if(!keep)A.pg=1;A.ps=A.ps||15;const d=$('gd').value,s=$('gs').value,a=$('ga').value,w=(A.q||'').split(/\s+/).filter(Boolean);
   const L=A.g.filter(g=>inD(g.dept_id,d)&&(!s||g.stage==s)&&(!a||g.checkpoints?.area?.[0]==a)&&(!w.length||w.every(x=>[g.checkpoints?.me_ref,g.checkpoints?.standard,g.description,g.root_cause,g.owner,g.stage,g.priority,dn(g.dept_id)].join(' ').toLowerCase().includes(x))));
-  $('gt').innerHTML=`<table><tr><th>Ref</th><th>Gap</th><th>Dept</th><th>Stage</th><th>Priority</th><th>Identified</th><th>Target</th></tr>${L.map(g=>`<tr class="click" onclick="openGap('${g.id}')"><td>${h(g.checkpoints?.me_ref)}</td><td>${h(g.description)}</td><td>${h(dn(g.dept_id))}</td><td><span class="tag">${h(g.stage)}</span></td><td>${h(g.priority)}</td><td>${fd(g.identified_on)}</td><td class="${g.target_date&&g.target_date<today()&&g.stage!='Improved'?'bad':''}">${fd(g.target_date)}</td></tr>`).join('')}</table><p class="sm">${L.length} record(s)${A.q?' matching “'+h(A.q)+'”':''}</p>`}
+  const od=g=>g.target_date&&g.target_date<today()&&g.stage!='Improved',pr=p=>({High:'hi',Medium:'md',Low:'lo'}[p]||'md');
+  const cnt={};A.g.filter(g=>inD(g.dept_id,d)&&(!a||g.checkpoints?.area?.[0]==a)).forEach(g=>cnt[g.stage]=(cnt[g.stage]||0)+1);
+  $('gkp').innerHTML=STAGES.filter(x=>cnt[x]).map(x=>`<button type="button" class="gkchip ${s==x?'on':''}" onclick="$('gs').value=${s==x?"''":"'"+x+"'"};gl()">${h(x)} <b>${cnt[x]}</b></button>`).join('');
+  $('gkn').textContent=L.length+' record(s)'+(A.q?' matching “'+A.q+'”':'')+(L.some(od)?' · '+L.filter(od).length+' overdue':'');
+  const np=Math.max(1,Math.ceil(L.length/A.ps));A.pg=Math.min(A.pg||1,np);const P=L.slice((A.pg-1)*A.ps,A.pg*A.ps);
+  $('gt').innerHTML=`<table class="gkt"><colgroup><col style="width:64px"><col><col style="width:140px"><col style="width:118px"><col style="width:74px"><col style="width:96px"><col style="width:96px"></colgroup><tr><th>Ref</th><th>Gap</th><th>Dept</th><th>Stage</th><th>Priority</th><th>Identified</th><th>Target</th></tr>${P.map(g=>`<tr class="click" onclick="openGap('${g.id}')"><td>${h((g.checkpoints?.me_ref||'').replace(/^ME\s*/,''))}</td><td class="gkg" title="${h(g.description)}">${h(g.description)}</td><td class="gkd" title="${h(dn(g.dept_id))}">${h(dn(g.dept_id))}</td><td><span class="tag gks">${h(g.stage)}</span></td><td><span class="gkpr ${pr(g.priority)}">${h(g.priority||'')}</span></td><td>${fd(g.identified_on)}</td><td class="${od(g)?'bad':''}">${fd(g.target_date)}</td></tr>`).join('')||'<tr><td colspan="7" class="sm">No gaps found</td></tr>'}</table>${L.length>5?`<div class="gkpg np"><span class="sm">${(A.pg-1)*A.ps+1}–${Math.min(L.length,A.pg*A.ps)} of ${L.length}</span><span class="gkb"><button class="g" ${A.pg<2?'disabled':''} onclick="gpg(1)">«</button><button class="g" ${A.pg<2?'disabled':''} onclick="gpg(${A.pg-1})">‹ Prev</button><span class="sm">Page <b>${A.pg}</b> of ${np}</span><button class="g" ${A.pg>=np?'disabled':''} onclick="gpg(${A.pg+1})">Next ›</button><button class="g" ${A.pg>=np?'disabled':''} onclick="gpg(${np})">»</button></span><span class="sm">Rows <select onchange="A.ps=+this.value;gl()">${[10,15,25,50,100].map(n=>`<option ${n==A.ps?'selected':''}>${n}</option>`).join('')}</select></span></div>`:''}`}
+function gpg(n){A.pg=n;gl(1);const t=$('gt');if(t)t.scrollIntoView({block:'nearest'})}
 async function openGap(id){
   const g=A.g.find(x=>x.id==id),ac=await all(()=>sb.from('activities').select('*').eq('gap_id',id).order('act_date').order('created_at'));A.gid=id;const pl=g.plan||{};
   $('mbox').innerHTML=`<div class="row np"><button onclick="pm()">Print record</button><button class="g" onclick="cm()">Close</button></div>
@@ -310,21 +404,34 @@ async function addAct(){const g=A.g.find(x=>x.id==A.gid),st=$('as').value;if(!$(
 
 /* ---------- Reports ---------- */
 async function rep(){
-  $('main').innerHTML=`<div class="card"><div class="row"><select id="rt"><option value="reg">Gap register</option><option value="log">Date-wise activity log</option><option value="ap">Action plan for gaps</option></select><select id="rd">${dopts('',1)}</select>From <input type="date" id="rf"> To <input type="date" id="rto" value="${today()}"><button onclick="runRep()">Show</button><button class="g" onclick="print()">Print</button></div><div id="ro"></div></div>`}
+  $('main').innerHTML=`<div class="card gkc"><div class="row gkr"><select id="rt"><option value="reg">Gap register</option><option value="log">Date-wise activity log</option><option value="ap">Action plan for gaps</option></select><select id="rd">${dopts('',1)}</select>From <input type="date" id="rf"> To <input type="date" id="rto" value="${today()}"><button onclick="runRep()">Show</button><button class="g" onclick="rprint()">Print</button></div><div id="ro"></div></div>`}
+function showR(o){A.R=o;A.rpg=1;A.rps=A.rps||15;drawR()}
+function drawR(){const o=A.R;if(!o)return;const n=o.rows.length,ps=A.rall?n||1:A.rps,np=Math.max(1,Math.ceil(n/ps));A.rpg=Math.min(A.rpg||1,np);const P=A.rall?o.rows:o.rows.slice((A.rpg-1)*ps,A.rpg*ps);
+  $('ro').innerHTML=o.pre+`<table class="${o.tc}">${o.th}${P.join('')||'<tr><td colspan="12" class="sm">No records found</td></tr>'}</table>`+(n>5&&!A.rall?`<div class="gkpg np"><span class="sm">${(A.rpg-1)*ps+1}–${Math.min(n,A.rpg*ps)} of ${n}</span><span class="gkb"><button class="g" ${A.rpg<2?'disabled':''} onclick="rpg(1)">«</button><button class="g" ${A.rpg<2?'disabled':''} onclick="rpg(${A.rpg-1})">‹ Prev</button><span class="sm">Page <b>${A.rpg}</b> of ${np}</span><button class="g" ${A.rpg>=np?'disabled':''} onclick="rpg(${A.rpg+1})">Next ›</button><button class="g" ${A.rpg>=np?'disabled':''} onclick="rpg(${np})">»</button></span><span class="sm">Rows <select onchange="A.rps=+this.value;A.rpg=1;drawR()">${[10,15,25,50,100].map(x=>`<option ${x==A.rps?'selected':''}>${x}</option>`).join('')}</select> · Print includes all ${n}</span></div>`:'')+`<div class="rsg">${o.post}</div>`}
+function rpg(n){A.rpg=n;drawR()}
+function rprint(){print()}
+addEventListener('beforeprint',()=>{if(A.R&&$('ro')&&$('ro').innerHTML){A.rall=1;drawR()}});addEventListener('afterprint',()=>{if(A.rall){A.rall=0;if($('ro'))drawR()}});
 async function runRep(){
   const t=$('rt').value,d=$('rd').value,f=$('rf').value,to=$('rto').value,sub=(d?h(dn(d)):'All departments')+' | '+(f?fd(f):'start')+' to '+fd(to);
   if(t=='ap')return runAP(d,f,to,sub);
   if(t=='reg'){let q=()=>sb.from('gaps').select('*,checkpoints(me_ref,area)').order('dept_id').order('identified_on').order('id');const G=(await all(q)).filter(g=>inD(g.dept_id,d)&&(!f||g.identified_on>=f)&&g.identified_on<=to);
-    $('ro').innerHTML=ph('Gap Register',sub)+`<table><tr><th>#</th><th>Dept</th><th>Ref</th><th>Gap</th><th>Root cause / plan</th><th>Owner</th><th>Priority</th><th>Identified</th><th>Target</th><th>Stage</th></tr>${G.map((g,i)=>`<tr><td>${i+1}</td><td>${h(dn(g.dept_id))}</td><td>${h(g.checkpoints?.me_ref)}</td><td>${h(g.description)}</td><td>${h(g.root_cause)}</td><td>${h(g.owner)}</td><td>${h(g.priority)}</td><td>${fd(g.identified_on)}</td><td>${fd(g.target_date)}</td><td>${h(g.stage)}</td></tr>`).join('')}</table>${sig()}`}
+    showR({pre:ph('Gap Register',sub),tc:'rpt',th:'<tr><th>#</th><th>Dept</th><th>Ref</th><th>Gap</th><th>Root cause / plan</th><th>Owner</th><th>Priority</th><th>Identified</th><th>Target</th><th>Stage</th></tr>',rows:G.map((g,i)=>`<tr><td>${i+1}</td><td>${h(dn(g.dept_id))}</td><td>${h(g.checkpoints?.me_ref)}</td><td>${h(g.description)}</td><td>${h(g.root_cause)}</td><td>${h(g.owner)}</td><td>${h(g.priority)}</td><td>${fd(g.identified_on)}</td><td>${fd(g.target_date)}</td><td>${h(g.stage)}</td></tr>`),post:sig()})}
   else{const[Ac,Gp]=await Promise.all([all(()=>sb.from('activities').select('*').order('act_date').order('created_at')),all(()=>sb.from('gaps').select('id,description,checkpoints(me_ref)').order('id'))]);
     const gm={};Gp.forEach(g=>gm[g.id]=g);const R=Ac.filter(a=>inD(a.dept_id,d)&&(!f||a.act_date>=f)&&a.act_date<=to);
-    $('ro').innerHTML=ph('Date-wise Activity Log',sub)+`<table><tr><th>Date</th><th>Dept</th><th>Ref</th><th>Stage</th><th>Activity</th><th>Responsible</th><th>Evidence</th></tr>${R.map(a=>`<tr><td>${fd(a.act_date)}</td><td>${h(dn(a.dept_id))}</td><td>${h(gm[a.gap_id]?.checkpoints?.me_ref)}</td><td>${h(a.stage)}</td><td>${h(a.details)}</td><td>${h(a.responsible||a.entered_by_name)}</td><td>${h(a.evidence)}</td></tr>`).join('')}</table>${sig()}`}}
+    showR({pre:ph('Date-wise Activity Log',sub),tc:'rpt',th:'<tr><th>Date</th><th>Dept</th><th>Ref</th><th>Stage</th><th>Activity</th><th>Responsible</th><th>Evidence</th></tr>',rows:R.map(a=>`<tr><td>${fd(a.act_date)}</td><td>${h(dn(a.dept_id))}</td><td>${h(gm[a.gap_id]?.checkpoints?.me_ref)}</td><td>${h(a.stage)}</td><td>${h(a.details)}</td><td>${h(a.responsible||a.entered_by_name)}</td><td>${h(a.evidence)}</td></tr>`),post:sig()})}}
 
 /* ---------- Admin (Core only) ---------- */
 async function admin(){
   const P=await all(()=>sb.from('profiles').select('*').order('email')),D=depts.filter(d=>d.active);
-  $('main').innerHTML=`<div class="card wrap"><h3>Users</h3><p class="sm">Create logins in Supabase → Authentication → Users (Add user). They appear here as “pending”; assign role and departments.</p><table><tr><th>Email</th><th>Name</th><th>Role</th><th>Departments (Nodal / Data entry)</th><th></th></tr>${P.map(p=>`<tr data-u="${p.id}"><td>${h(p.email)}</td><td><input class="n" value="${h(p.full_name)}"></td><td><select class="r">${['pending','core','nodal','deo'].map(r=>`<option value="${r}" ${r==p.role?'selected':''}>${{pending:'Pending',core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry Operator'}[r]}</option>`).join('')}</select></td><td>${dchk(D,'ud',d=>p.dept_ids.includes(d.id))}</td><td><button onclick="saveU(this.closest('tr'))">Save</button></td></tr>`).join('')}</table></div>
-  <div class="card"><h3>Departments</h3>${depts.map(d=>`<div class="row" data-d="${d.id}"><input value="${h(d.name)}"><select class="pp"><option value="">Top-level department</option>${depts.filter(x=>x.id!=d.id&&!x.parent_id).map(x=>`<option value="${x.id}" ${x.id==d.parent_id?'selected':''}>Ward of ${h(x.name)}</option>`).join('')}</select><label><input type="checkbox" ${d.active?'checked':''}> active</label><button class="g" onclick="saveD(this.parentElement)">Save</button></div>`).join('')}<div class="row"><input id="nd2" placeholder="New department / ward"><select id="nd3"><option value="">Top-level department</option>${depts.filter(x=>!x.parent_id).map(x=>`<option value="${x.id}">Ward of ${h(x.name)}</option>`).join('')}</select><button onclick="addD()">Add</button></div></div>`}
+  const RL={pending:'Pending',core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry Operator'};
+  const tops=depts.filter(d=>!d.parent_id||!depts.some(x=>x.id==d.parent_id)),ord=tops.flatMap(d=>[d,...depts.filter(x=>x.parent_id==d.id)]);
+  const sum=(role,n)=>role=='core'?'All departments (Core)':n+' of '+D.length+' selected';
+  $('main').innerHTML=`<div class="card adc"><div class="row" style="margin-bottom:4px"><h3 style="margin:0">Users</h3><span class="sm">Create logins in Supabase → Authentication → Users. They appear here as “Pending”; assign role and departments.</span></div>
+  <table class="adt"><tr><th>Email</th><th>Name</th><th>Role</th><th>Departments (Nodal / Data entry)</th><th></th></tr>${P.map(p=>`<tr data-u="${p.id}" onchange="adsum(this)"><td class="ade" title="${h(p.email)}">${h(p.email)}</td><td><input class="n" value="${h(p.full_name)}"></td><td><select class="r">${['pending','core','nodal','deo'].map(r=>`<option value="${r}" ${r==p.role?'selected':''}>${RL[r]}</option>`).join('')}</select></td><td><details class="adx"><summary><span class="ads">${sum(p.role,(p.dept_ids||[]).filter(i=>D.some(d=>d.id==i)).length)}</span></summary><div class="adk">${dchk(D,'ud',d=>(p.dept_ids||[]).includes(d.id))}</div></details></td><td><button class="adb" onclick="saveU(this.closest('tr'))">Save</button></td></tr>`).join('')}</table></div>
+  <div class="card adc"><div class="row" style="margin-bottom:6px"><h3 style="margin:0">Departments</h3><span class="sm">${depts.length} total · wards are indented under their parent</span>
+  <span class="row adn" style="margin:0 0 0 auto"><input id="nd2" placeholder="New department / ward"><select id="nd3"><option value="">Top-level</option>${depts.filter(x=>!x.parent_id).map(x=>`<option value="${x.id}">Ward of ${h(x.name)}</option>`).join('')}</select><button class="adb" onclick="addD()">Add</button></span></div>
+  <div class="adg">${tops.map(t=>`<div class="adgp">${[t,...depts.filter(x=>x.parent_id==t.id)].map(d=>`<div class="adr${d.parent_id?' w':''}" data-d="${d.id}"><input value="${h(d.name)}"><select class="pp"><option value="">Top-level</option>${depts.filter(x=>x.id!=d.id&&!x.parent_id).map(x=>`<option value="${x.id}" ${x.id==d.parent_id?'selected':''}>Ward of ${h(x.name)}</option>`).join('')}</select><label title="Active"><input type="checkbox" ${d.active?'checked':''}> active</label><button class="g adb" onclick="saveD(this.parentElement)">Save</button></div>`).join('')}</div>`).join('')}</div></div>`}
+function adsum(tr){const r=tr.querySelector('.r').value,n=tr.querySelectorAll('input.ud:checked').length,t=tr.querySelectorAll('input.ud').length;tr.querySelector('.ads').textContent=r=='core'?'All departments (Core)':n+' of '+t+' selected'}
 async function saveU(tr){const{error}=await sb.from('profiles').update({full_name:tr.querySelector('.n').value,role:tr.querySelector('.r').value,dept_ids:[...tr.querySelectorAll('input.ud:checked')].map(c=>c.value)}).eq('id',tr.dataset.u);alert(error?error.message:'Saved')}
 async function saveD(r){const{error}=await sb.from('departments').update({name:r.querySelector('input').value,active:r.querySelector('input[type=checkbox]').checked,parent_id:r.querySelector('.pp').value||null}).eq('id',r.dataset.d);alert(error?error.message+(/parent_id/.test(error.message)?'\nRun migration.sql first.':''):'Saved')}
 async function addD(){const{error}=await sb.from('departments').insert($('nd3').value?{name:$('nd2').value,parent_id:$('nd3').value}:{name:$('nd2').value});if(error)return alert(error.message);boot()}
@@ -372,22 +479,37 @@ async function mtg(){
   A.sel=[];A.pkm='';
   [A.M,A.m]=await Promise.all([all(()=>sb.from('meetings').select('*').order('meeting_date',{ascending:false})),all(()=>sb.from('members').select('*').order('name'))]);
   const n=A.M.length+1;
-  $('main').innerHTML=(core()?`<div class="card"><h3>New order</h3>
-  <div class="row"><select id="ok" onchange="otf()">${opts(OT)}</select><input id="ot" size="48" placeholder="Subject / title" oninput="this.dataset.u=1">Memo / Order No. <input id="on" value="CGR/H/${new Date().getFullYear()}/${String(n).padStart(3,'0')}" size="16">Date <input type="date" id="od" value="${today()}"><input id="oi" size="18" placeholder="Issued by" value="Superintendent"></div>
-  <p>Purpose / preamble (optional – e.g. “In order to …”)<textarea id="op" rows="2"></textarea></p>
-  <div class="row"><span id="ld"></span><input type="date" id="mdt"><span id="gto">To <input type="date" id="mdt2"></span><span id="gtm"><input type="time" id="mtm" value="11:00"></span><span id="gv"><input id="mv" size="34" placeholder="Venue" value="Conference Room, ${h(CFG.hospital)}"></span><span id="gtr">Trainer <select id="otm" onchange="if(this.value)$('otr').value=this.options[this.selectedIndex].text"><option value="">Select from members…</option>${A.m.map(m=>`<option value="${m.id}">${h(m.name)}${m.designation?', '+h(m.designation):''}</option>`).join('')}</select><input id="otr" size="30" placeholder="or type trainer / resource person"></span><span id="gcv">Member-Convenor <select id="ocv"><option value="">— none —</option>${A.m.map(m=>`<option value="${m.id}">${h(m.name)}${m.designation?', '+h(m.designation):''}</option>`).join('')}</select></span></div>
-  <p><span id="la"></span><textarea id="oa" rows="5"></textarea></p>
-  <p>Closing paragraph (optional)<textarea id="oc" rows="2"></textarea></p>
-  <p>Copy forwarded for information and n/a to – one per line<textarea id="ocp" rows="3">The Chief Medical Officer of Health, Hooghly
+  $('main').innerHTML=(core()?`<details class="card ordn"><summary><h3>New order</h3><span class="sm">Meeting, training or any other order</span><span class="ordp">＋ Create</span></summary>
+  <div class="og">
+    <label class="f"><span>Order type</span><select id="ok" onchange="otf()">${opts(OT)}</select></label>
+    <label class="f f-2"><span>Subject / title</span><input id="ot" placeholder="Subject / title" oninput="this.dataset.u=1"></label>
+    <label class="f"><span>Memo / Order No.</span><input id="on" value="CGR/H/${new Date().getFullYear()}/${String(n).padStart(3,'0')}"></label>
+    <label class="f"><span>Order date</span><input type="date" id="od" value="${today()}"></label>
+    <label class="f"><span>Issued by</span><input id="oi" placeholder="Issued by" value="Superintendent"></label>
+  </div>
+  <div class="og og-e">
+    <span class="f"><span id="ld"></span><input type="date" id="mdt"></span>
+    <span class="f" id="gto"><span>To</span><input type="date" id="mdt2"></span>
+    <span class="f" id="gtm"><span>Time</span><input type="time" id="mtm" value="11:00"></span>
+    <span class="f f-2" id="gv"><span>Venue</span><input id="mv" placeholder="Venue" value="Conference Room, ${h(CFG.hospital)}"></span>
+    <span class="f f-2" id="gtr"><span>Trainer / resource person</span><span class="f2"><select id="otm" onchange="if(this.value)$('otr').value=this.options[this.selectedIndex].text"><option value="">Select from members…</option>${A.m.map(m=>`<option value="${m.id}">${h(m.name)}${m.designation?', '+h(m.designation):''}</option>`).join('')}</select><input id="otr" placeholder="or type name"></span></span>
+    <span class="f f-2" id="gcv"><span>Member-Convenor</span><select id="ocv"><option value="">— none —</option>${A.m.map(m=>`<option value="${m.id}">${h(m.name)}${m.designation?', '+h(m.designation):''}</option>`).join('')}</select></span>
+  </div>
+  <div class="og og-t">
+    <label class="f f-2"><span>Purpose / preamble <em>(optional – e.g. “In order to …”)</em></span><textarea id="op" rows="2"></textarea></label>
+    <label class="f f-2"><span>Closing paragraph <em>(optional)</em></span><textarea id="oc" rows="2"></textarea></label>
+    <label class="f f-w"><span id="la"></span><textarea id="oa" rows="4"></textarea></label>
+    <label class="f f-w"><span>Copy forwarded for information and n/a to <em>(one per line)</em></span><textarea id="ocp" rows="3">The Chief Medical Officer of Health, Hooghly
 All Members of the Committee
-Office Copy</textarea></p>
+Office Copy</textarea></label>
+  </div>
   <div class="pkb"><h4 style="margin:0 0 8px"><span id="lp"></span> – select members</h4>
   <div class="row"><select id="pc" onchange="pkc()"><option value="all">Overall (all members)</option><option value="dept">Department-wise</option><option value="aoc">Area of Concern-wise</option></select><select id="pv" onchange="pk()" style="display:none"></select><input id="pq" placeholder="Search name / designation…" oninput="pk()" size="26"><button class="g" onclick="pkAll(true)">Add all shown</button></div>
   <div class="pkl" id="pa"></div>
   <h4 style="margin:12px 0 6px">Selected members (<span id="pn">0</span>) <button class="g" onclick="A.sel=[];pk()">Clear</button></h4>
   <div class="pkl" id="ps"></div></div>
-  <div class="row" style="margin-top:10px"><button onclick="saveMtg()">Generate order</button></div></div>`:'')+
-  `<div class="card wrap"><h3>Orders</h3><table><tr><th>Memo No.</th><th>Date</th><th>Type</th><th>Subject</th><th>Event / effective date</th><th></th></tr>${A.M.map(m=>`<tr><td>${h(m.order_no)}</td><td>${fd(m.order_date)}</td><td><span class="tag">${h(otk(m))}</span></td><td>${h(m.title)}</td><td>${fd(m.meeting_date)}</td><td><button class="g" onclick="openOrder(${m.id})">Order</button>${otk(m)=='Meeting'?` <button class="g" onclick="go('res');setTimeout(()=>openRes(${m.id}),400)">Resolution</button>`:''}${core()?` <button class="g" onclick="delMtg(${m.id})">Delete</button>`:''}</td></tr>`).join('')||'<tr><td colspan="6" class="sm">No orders yet</td></tr>'}</table></div>`;
+  <div class="row" style="margin-top:10px"><button onclick="saveMtg()">Generate order</button></div></details>`:'')+
+  `<div class="card wrap ordc"><div class="row" style="margin-bottom:4px"><h3 style="margin:0;flex:1">Orders</h3><span class="sm">${A.M.length} total</span></div><table class="rtab"><tr><th>Memo No.</th><th>Date</th><th>Type</th><th>Subject</th><th>Event / effective</th><th></th></tr>${A.M.map(m=>`<tr><td data-l="Memo">${h(m.order_no)}</td><td data-l="Date">${fd(m.order_date)}</td><td><span class="tag">${h(otk(m))}</span></td><td class="t">${h(m.title)}</td><td data-l="Event">${fd(m.meeting_date)}</td><td class="ra2"><button class="g" onclick="openOrder(${m.id})">Order</button>${otk(m)=='Meeting'?` <button class="g" onclick="go('res');setTimeout(()=>openRes(${m.id}),400)">Resolution</button>`:''}${core()?` <button class="g" onclick="delMtg(${m.id})">Delete</button>`:''}</td></tr>`).join('')||'<tr><td colspan="6" class="sm">No orders yet</td></tr>'}</table></div>`;
   if(core()){otf();pkc()}}
 /* ===== Member picker for orders ===== */
 const AOC=[['A','Service Provision'],['B','Patient Rights'],['C','Inputs'],['D','Support Services'],['E','Clinical Services'],['F','Infection Control'],['G','Quality Management'],['H','Outcome']];
@@ -419,7 +541,7 @@ function openOrder(id){const m=A.M.find(x=>x.id==id),k=otk(m),d=m.details||{},R=
 /* ===== Meeting resolutions ===== */
 async function res(){
   [A.M,A.R]=await Promise.all([all(()=>sb.from('meetings').select('*').order('meeting_date',{ascending:false})),all(()=>sb.from('resolutions').select('meeting_id'))]);
-  $('main').innerHTML=`<div class="card wrap"><h3>Meeting resolutions</h3><table><tr><th>Meeting</th><th>Date</th><th>Order No.</th><th>Resolution</th><th></th></tr>${A.M.filter(m=>otk(m)=='Meeting').map(m=>`<tr><td>${h(m.title)}</td><td>${fd(m.meeting_date)}</td><td>${h(m.order_no)}</td><td>${A.R.some(r=>r.meeting_id==m.id)?'<span class="tag">Saved</span>':'–'}</td><td><button class="g" onclick="openRes(${m.id})">${core()?'Prepare / edit':'View'}</button></td></tr>`).join('')||'<tr><td colspan="5" class="sm">Create a meeting order first.</td></tr>'}</table></div><div id="re"></div>`}
+  $('main').innerHTML=`<div class="card wrap ordc"><div class="row" style="margin-bottom:4px"><h3 style="margin:0;flex:1">Meeting resolutions</h3></div><table class="rtab"><tr><th>Meeting</th><th>Date</th><th>Order No.</th><th>Resolution</th><th></th></tr>${A.M.filter(m=>otk(m)=='Meeting').map(m=>`<tr><td class="t">${h(m.title)}</td><td data-l="Date">${fd(m.meeting_date)}</td><td data-l="Order No.">${h(m.order_no)}</td><td data-l="Resolution">${A.R.some(r=>r.meeting_id==m.id)?'<span class="tag">Saved</span>':'–'}</td><td class="ra2"><button class="g" onclick="openRes(${m.id})">${core()?'Prepare / edit':'View'}</button></td></tr>`).join('')||'<tr><td colspan="5" class="sm">Create a meeting order first.</td></tr>'}</table></div><div id="re"></div>`}
 const ritem=(it,i)=>`<tr class="ri"><td>${i+1}</td><td><textarea class="ra" rows="2">${h(it.agenda)}</textarea></td><td><textarea class="rd" rows="2">${h(it.discussion)}</textarea></td><td><textarea class="rr" rows="2">${h(it.decision)}</textarea></td></tr>`;
 async function openRes(mid){
   const m=A.M.find(x=>x.id==mid);A.rm=m;A.m=await all(()=>sb.from('members').select('*').order('name'));
@@ -497,7 +619,7 @@ const LH=()=>`<div class="lh"><img src="${EMB}" alt=""><b>O/o the Superintendent
 
 /* ===== Action plan report ===== */
 async function runAP(d,f,to,sub){const G=(await all(()=>sb.from('gaps').select('*,checkpoints(me_ref,standard)').neq('stage','Improved').order('dept_id').order('id'))).filter(g=>inD(g.dept_id,d)&&(!f||g.identified_on>=f)&&g.identified_on<=to);
-  $('ro').innerHTML=`<div class="ap">${phs('Action Plan for Gaps',sub)}<table class="aptb"><tr><th>S. No.</th><th>Department</th><th>ME Ref. / Standard</th><th>Gap observed</th><th>Root cause</th><th>Corrective action</th><th>Preventive action</th><th>Resources</th><th>Responsible person</th><th>Timeline</th><th>Status</th></tr>${G.map((g,i)=>{const p=g.plan||{};return`<tr><td>${i+1}</td><td>${h(dn(g.dept_id))}</td><td>${h(g.checkpoints?.me_ref)}<div class="sm">${h(g.checkpoints?.standard)}</div></td><td>${h(g.description)}</td><td class="pw">${h(g.root_cause)}</td><td class="pw">${h(p.corrective)}</td><td class="pw">${h(p.preventive)}</td><td class="pw">${h(p.resources)}</td><td>${h(g.owner)}</td><td>${fd(g.target_date)}</td><td>${h(g.stage)}</td></tr>`}).join('')}</table>${sig()}</div>`}
+  showR({pre:`<div class="ap">${phs('Action Plan for Gaps',sub)}`,tc:'aptb rpt',post:sig()+'</div>',th:`<tr><th>S. No.</th><th>Department</th><th>ME Ref. / Standard</th><th>Gap observed</th><th>Root cause</th><th>Corrective action</th><th>Preventive action</th><th>Resources</th><th>Responsible person</th><th>Timeline</th><th>Status</th></tr>`,rows:G.map((g,i)=>{const p=g.plan||{};return`<tr><td>${i+1}</td><td>${h(dn(g.dept_id))}</td><td>${h(g.checkpoints?.me_ref)}<div class="sm">${h(g.checkpoints?.standard)}</div></td><td>${h(g.description)}</td><td class="pw">${h(g.root_cause)}</td><td class="pw">${h(p.corrective)}</td><td class="pw">${h(p.preventive)}</td><td class="pw">${h(p.resources)}</td><td>${h(g.owner)}</td><td>${fd(g.target_date)}</td><td>${h(g.stage)}</td></tr>`})})}
 
 /* ===== PDCA cycle documentation ===== */
 const PD=[['plan','Plan','What & why','#1a73e8'],['do','Do','Implement','#188038'],['check','Check','Measure & verify','#f9ab00'],['act','Act','Standardise / improve','#d93025']],PS=['Plan','Do','Check','Act','Closed'];
@@ -518,5 +640,30 @@ function pdDoc(id){const c=A.P.find(x=>x.id==id);
   <div class="pdg">${WHEEL}${PD.map(s=>`<div class="pq" style="--c:${s[3]}"><div class="pqh"><span>${s[1][0]}</span>${s[1]} <small>${s[2]}</small>${fd(c[s[0]+'_date'])}</div><div class="pv">${h(c[s[0]+'_txt'])}</div></div>`).join('')}</div>${sig()}</div>`;
   $('modal').style.display='block'}
 
+/* ===== Global auto-pagination: any long table in the page area is shown a page at a time (print shows everything) ===== */
+(function(){
+  const SKIP=/\b(dt|adt|gkt|rpt|apt|aptb|nopg)\b/,LIM=20;
+  function setup(t){
+    if(t.dataset.pgd)return;t.dataset.pgd=1;
+    if(SKIP.test(t.className)||t.closest('.nopg,#modal,.dg,.pkl'))return;
+    const rows=[...t.querySelectorAll(':scope>tr,:scope>tbody>tr')].filter(r=>r.parentElement.tagName!='THEAD');
+    const isH=r=>r.querySelector('th'),isG=r=>{const c=r.children;return c.length==1&&+c[0].colSpan>1};
+    const data=rows.filter(r=>!isH(r));if(data.length<=LIM)return;
+    // units: a data row plus the group-header rows directly above it
+    const U=[];let pend=[];data.forEach(r=>{if(isG(r)){pend.push(r);return}U.push([...pend,r]);pend=[]});if(pend.length)U.push(pend);
+    const hs=data.slice(0,8).map(r=>r.offsetHeight).filter(Boolean),av=hs.length?hs.reduce((p,x)=>p+x,0)/hs.length:30;let ps=av>90?5:av>45?10:15,pg=1;const bar=document.createElement('div');bar.className='gkpg np';t.insertAdjacentElement('afterend',bar);
+    const n=U.length;
+    function draw(){
+      const np=Math.max(1,Math.ceil(n/ps));pg=Math.min(pg,np);
+      U.forEach((u,i)=>{const on=i>=(pg-1)*ps&&i<pg*ps;u.forEach(r=>on?r.removeAttribute('data-pgh'):r.setAttribute('data-pgh','1'))});
+      bar.innerHTML=`<span class="sm">${(pg-1)*ps+1}–${Math.min(n,pg*ps)} of ${n}</span><span class="gkb"><button type="button" class="g" ${pg<2?'disabled':''} data-p="1">«</button><button type="button" class="g" ${pg<2?'disabled':''} data-p="${pg-1}">‹ Prev</button><span class="sm">Page <b>${pg}</b> of ${np}</span><button type="button" class="g" ${pg>=np?'disabled':''} data-p="${pg+1}">Next ›</button><button type="button" class="g" ${pg>=np?'disabled':''} data-p="${np}">»</button></span><span class="sm">Rows <select>${[5,10,15,25,50,100].map(x=>`<option ${x==ps?'selected':''}>${x}</option>`).join('')}</select></span>`;
+    }
+    bar.onclick=e=>{const b=e.target.closest('button[data-p]');if(!b||b.disabled)return;pg=+b.dataset.p;draw();t.scrollIntoView({block:'nearest'})};
+    bar.onchange=e=>{if(e.target.tagName=='SELECT'){ps=+e.target.value;pg=1;draw()}};
+    draw();
+  }
+  let q=0;const run=()=>{q=0;document.querySelectorAll('#main table').forEach(setup)};
+  new MutationObserver(()=>{if(!q)q=requestAnimationFrame(run)}).observe(document.getElementById('main'),{childList:true,subtree:true});
+})();
 boot();
 </script></body></html>
