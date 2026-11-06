@@ -118,6 +118,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gb);border-color
 ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#c2d7f8;border-radius:8px}
 @media print{.card{border-top:0!important}header{border:0;box-shadow:none;background:none}th{background:#eee!important;color:#000!important}.pk th{background:#eee!important}body{background:#fff!important}.logo{display:none}}
 
+nav:empty{display:none!important}
 /* ===== Gradient theme ===== */
 @media screen{body{background:linear-gradient(135deg,#dbe8ff 0%,#fde3e0 28%,#fff3cc 52%,#d9f2e0 78%,#d4ecfb 100%) fixed}}
 header{background:linear-gradient(90deg,rgba(219,232,255,.92),rgba(255,255,255,.92) 45%,rgba(217,242,224,.92));border-image:linear-gradient(90deg,#4285f4,#ea4335,#fbbc04,#34a853) 1}
@@ -241,11 +242,19 @@ table.rtab{display:table;width:100%;overflow:visible}table.rtab th,table.rtab td
 /* pop-up records / print previews must sit above the sticky top bar */
 #modal{z-index:200}
 @media print{#modal{z-index:auto}}
+
+.pl{cursor:pointer;color:#1a56c4}.pl:hover{text-decoration:underline}
+.pcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}.pcard{border:1px solid #dadce0;border-radius:14px;padding:12px;background:#fff;display:flex;flex-direction:column;gap:6px;break-inside:avoid}.pcd{line-height:1.9}.pcb{margin:2px 0}
+.av.big{width:64px;height:64px;font-size:22px}.pfh{display:flex;gap:14px;align-items:center;margin:10px 0 12px}.pfn{font:700 16pt "Book Antiqua",serif}
+.od table.pft{width:100%}.od .pft th{width:26%;text-align:left;background:#f1f3f4}.od .pft td{text-align:left}.pfl{margin:0;padding-left:18px}.pfl li{margin-bottom:6px}
+@media print{.pcg{grid-template-columns:repeat(2,1fr)}.pcard{border:1px solid #999}.pcard button{display:none}.pcd .dc,.pcard .rc{background:none!important}.od .pft th{background:#eee!important}.av.big{display:flex!important}}
 </style>
 </head><body><div id="tb"><i></i></div><div id="pl"><span class="lsp"></span></div><div id="ldr"><div class="lg"><span class="logo lgl">N</span><b>NQAS Portal</b><span class="lbar"><i></i></span><small>Loading, please wait…</small></div></div><script>setTimeout(function(){var e=document.getElementById('ldr');if(e)e.className+=' out'},20000)</script>
 <header id="hd" class="np"></header><div id="shell"><nav id="nav" class="np"></nav><main id="main"></main></div><div id="modal" onclick="if(event.target==this)cm()"><div id="mbox"></div></div>
 <script>
-const CFG={url:'https://tppukdafjwvvwkfeiilb.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwcHVrZGFmand2dndrZmVpaWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwODA2MjAsImV4cCI6MjEwODY1NjYyMH0.97gn3RkL7HzvUXTAyD6K5UME38Pfl-3-cEoYW6Y1JGs',hospital:'Chandannagar Sub-Divisional Hospital'};
+const CFG={url:'https://tppukdafjwvvwkfeiilb.supabase.co',key:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwcHVrZGFmand2dndrZmVpaWxiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwODA2MjAsImV4cCI6MjEwODY1NjYyMH0.97gn3RkL7HzvUXTAyD6K5UME38Pfl-3-cEoYW6Y1JGs',hospital:'Chandannagar Sub-Divisional Hospital',
+  /* Delete rights. Empty = every Core Committee login is an admin. To restrict deletes to specific logins, list their e-mails in lower case, e.g. admins:['name@gmail.com'] */
+  admins:[]};
 /* ===== global loading indicator ===== */
 let _ln=0,_ld,_lt;const _tb=()=>document.querySelector('#tb i'),_tbe=()=>document.getElementById('tb'),_pl=()=>document.getElementById('pl');
 function ldStart(){clearTimeout(_ld);if(_ln++)return;const b=_tb(),t=_tbe();if(!b)return;clearTimeout(_lt);b.style.transition='none';b.style.width='0';void b.offsetWidth;t.style.opacity=1;b.style.transition='width 9s cubic-bezier(.08,.6,.2,1)';b.style.width='82%';_lt=setTimeout(()=>_pl()&&_pl().classList.add('on'),300)}
@@ -264,7 +273,7 @@ const fd=d=>d?d.split('-').reverse().join('/'):'';
 const dn=id=>{const d=depts.find(x=>x.id==id);if(!d)return'';const p=d.parent_id&&depts.find(x=>x.id==d.parent_id);return p?p.name+' – '+d.name:d.name};
 const dgrp=(list,sel)=>{const ids=new Set(list.map(d=>d.id)),top=list.filter(d=>!d.parent_id||!ids.has(d.parent_id)),o=(d,t)=>`<option value="${d.id}" ${d.id==sel?'selected':''}>${h(t)}</option>`;return top.map(d=>{const k=list.filter(x=>x.parent_id==d.id);return k.length?`<optgroup label="${h(d.name)}">${o(d,d.name+' – all wards')}${k.map(x=>o(x,x.name)).join('')}</optgroup>`:o(d,dn(d.id))}).join('')};
 const dchk=(list,cls,on,oc)=>{const ids=new Set(list.map(d=>d.id)),top=list.filter(d=>!d.parent_id||!ids.has(d.parent_id)),cb=(d,t,w)=>`<label style="display:inline-block;margin-right:8px"><input type="checkbox" class="${cls}${w?' w':''}" value="${d.id}" ${on(d)?'checked':''} ${oc||''}>${h(t)}</label>`;return top.map(d=>{const k=list.filter(x=>x.parent_id==d.id);return k.length?`<div class="dg"><b>${h(d.name)}</b> ${cb(d,'IPD level',0).replace('IPD level',h(d.name)+' (whole)')}<button type="button" class="g" onclick="const g=this.closest('.dg'),w=[...g.querySelectorAll('input.w')],a=w.every(c=>c.checked);w.forEach(c=>c.checked=!a);w[0]&&w[0].dispatchEvent(new Event('change'))">All wards</button>${k.map(x=>cb(x,x.name,1)).join('')}</div>`:cb(d,dn(d.id),0)}).join('')};
-const mine=()=>depts.filter(d=>d.active&&(me.role=='core'||me.dept_ids.includes(d.id)||(d.parent_id&&me.dept_ids.includes(d.parent_id))));
+const mine=()=>depts.filter(d=>d.active&&(me.role=='core'||(me.dept_ids||[]).includes(d.id)||(d.parent_id&&(me.dept_ids||[]).includes(d.parent_id))));
 const kid=d=>mine().filter(x=>x.parent_id==d.id),leaf=()=>mine().filter(d=>!kid(d).length),inD=(x,d)=>!d||x==d||depts.find(y=>y.id==x)?.parent_id==d;
 async function cpsFor(id){const f=i=>all(()=>sb.from('checkpoints').select('*').eq('dept_id',i).order('sheet').order('seq'));const r=await f(id),p=depts.find(d=>d.id==id)?.parent_id;return r.length||!p?r:f(p)}
 const opts=(a,sel)=>a.map(x=>`<option ${x==sel?'selected':''}>${h(x)}</option>`).join('');
@@ -280,17 +289,26 @@ async function boot(){try{await boot0()}finally{hideSplash()}}
 async function boot0(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session)return login();
-  const{data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).single();me=p;
+  {const lt=idleGet();if(lt&&Date.now()-lt>=IDLE_MS){try{localStorage.removeItem(LK)}catch(e){}await sb.auth.signOut();return login(IDLE_MSG)}}
+  const{data:p}=await sb.from('profiles').select('*').eq('id',session.user.id).single();me=p;if(me)idleStart();
   if(!me||me.role=='pending'){$('nav').innerHTML='';$('main').innerHTML='<div class="card">Your account is created but not yet activated. Ask the Core Committee to assign your role and department.<br><br><button onclick="logout()">Logout</button></div>';return}
   depts=(await sb.from('departments').select('*').order('name')).data||[];
   const t=NAVS.slice();if(me.role=='core')t.push('Settings',['admin','Admin']);
   $('nav').innerHTML=t.map(x=>typeof x=='string'?`<div class="nsep">${x}</div>`:`<button class="nv" id="n_${x[0]}" title="${x[1]}" onclick="go('${x[0]}')"><svg viewBox="0 0 24 24"><path d="${IC[x[0]]}"/></svg><span class="nl">${x[1]}</span></button>`).join('');
-  $('hd').innerHTML=`<button id="mb" title="Expand / minimize menu" onclick="tg()"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button><span class="logo">N</span><b>NQAS Portal</b><div class="search"><input id="q" type="search" placeholder="Search gaps by ref, text, owner, stage, department…" oninput="sq()"></div><span class="sp"></span><span class="chip">${h(me.full_name||me.email)} · ${{core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry'}[me.role]}</span><button class="g" onclick="logout()">Logout</button>`;
+  $('hd').innerHTML=`<button id="mb" title="Expand / minimize menu" onclick="tg()"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button><span class="logo">N</span><b>NQAS Portal</b><div class="search"><input id="q" type="search" placeholder="Search gaps by ref, text, owner, stage, department…" oninput="sq()"></div><span class="sp"></span><span class="chip">${h(me.full_name||me.email)} · ${isAdmin()?'Admin':{core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry'}[me.role]}</span><button class="g" onclick="logout()">Logout</button>`;
   await go('dash');
 }
-function login(){$('nav').innerHTML='';$('hd').innerHTML='<span class="logo">N</span><b>NQAS Portal</b>';$('main').innerHTML=`<div class="card" style="max-width:340px;margin:60px auto;box-shadow:var(--sh2)"><h3>NQAS Portal – Login</h3><p class="sm">Authorised users only.</p><p><input id="em" type="email" placeholder="Email" style="width:100%"></p><p><input id="pw" type="password" placeholder="Password" style="width:100%"></p><button onclick="doLogin()">Login</button> <span id="le" class="bad"></span></div>`}
-async function doLogin(){const{error}=await sb.auth.signInWithPassword({email:$('em').value,password:$('pw').value});if(error)$('le').textContent=error.message;else boot()}
-async function logout(){await sb.auth.signOut();location.reload()}
+function login(msg){$('nav').innerHTML='';$('hd').innerHTML='<span class="logo">N</span><b>NQAS Portal</b>';$('main').innerHTML=`<div class="card" style="max-width:340px;margin:60px auto;box-shadow:var(--sh2)"><h3>NQAS Portal – Login</h3><p class="sm">Authorised users only.</p><p><input id="em" type="email" placeholder="Email" style="width:100%"></p><p><input id="pw" type="password" placeholder="Password" style="width:100%"></p><button onclick="doLogin()">Login</button> <span id="le" class="bad">${h(msg||'')}</span></div>`}
+async function doLogin(){const{error}=await sb.auth.signInWithPassword({email:$('em').value,password:$('pw').value});if(error)$('le').textContent=error.message;else{try{localStorage.removeItem(LK)}catch(e){}boot()}}
+async function logout(){idleStop();try{localStorage.removeItem(LK)}catch(e){}await sb.auth.signOut();location.reload()}
+/* ===== Auto logout after 5 hours of inactivity ===== */
+const IDLE_MS=5*60*60*1000,LK='nqas_last_active',IDLE_MSG='You were logged out after 5 hours of inactivity. Please log in again.',IDLE_EV=['mousemove','mousedown','keydown','scroll','touchstart','click','wheel'];let _it,_la=Date.now(),_lw=0;
+const idleGet=()=>{try{return +localStorage.getItem(LK)||0}catch(e){return 0}};
+function idleTouch(){const n=Date.now();_la=n;if(n-_lw>10000){_lw=n;try{localStorage.setItem(LK,n)}catch(e){}}}
+function idleCheck(){if(!me)return;if(Date.now()-Math.max(_la,idleGet())>=IDLE_MS)autoLogout()}
+function idleStart(){idleStop();_la=Date.now();_lw=0;idleTouch();IDLE_EV.forEach(e=>addEventListener(e,idleTouch,{passive:true,capture:true}));document.addEventListener('visibilitychange',idleCheck);_it=setInterval(idleCheck,30000)}
+function idleStop(){clearInterval(_it);IDLE_EV.forEach(e=>removeEventListener(e,idleTouch,{capture:true}));document.removeEventListener('visibilitychange',idleCheck)}
+async function autoLogout(){idleStop();me=null;try{localStorage.removeItem(LK)}catch(e){}try{await sb.auth.signOut()}catch(e){}cm();login(IDLE_MSG)}
 function go(v){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.id=='n_'+v));return ({dash,assess,gaps,rep,admin,mem,mtg,res,out,pdca}[v])().catch(e=>$('main').innerHTML='<div class="card bad">'+h(e.message)+'</div>')}
 
 /* ---------- Dashboard ---------- */
@@ -331,9 +349,9 @@ async function assess(d){
   const L=await all(()=>sb.from('assessment_summary').select('*').eq('dept_id',A.dept).order('assess_date',{ascending:false}).order('id'));
   $('main').innerHTML=`<div class="card np"><div class="row"><select onchange="assess(this.value)">${leaf().map(d=>`<option value="${d.id}" ${d.id==A.dept?'selected':''}>${h(dn(d.id))}</option>`).join('')}</select></div>
   <div class="row"><b>New assessment:</b><input type="date" id="nd" value="${today()}"><select id="nt">${opts(ATYPES)}</select><input id="na" placeholder="Assessor name(s)" size="30"><button onclick="newA()">Create</button></div>
-  <table><tr><th>Date</th><th>Type</th><th>Assessors</th><th>Status</th><th>Scored</th><th>Score</th>${core()?'<th></th>':''}</tr>${L.map(a=>`<tr class="click" onclick="openA('${a.id}')"><td>${fd(a.assess_date)}</td><td>${h(a.atype)}</td><td></td><td>${a.status}</td><td>${a.scored}</td><td>${pct(a.got,a.scored)}</td>${core()?`<td><button class="g r" onclick="event.stopPropagation();delA('${a.id}')">Remove</button></td>`:''}</tr>`).join('')}</table></div><div id="ae"></div>`;
+  <table><tr><th>Date</th><th>Type</th><th>Assessors</th><th>Status</th><th>Scored</th><th>Score</th>${isAdmin()?'<th></th>':''}</tr>${L.map(a=>`<tr class="click" onclick="openA('${a.id}')"><td>${fd(a.assess_date)}</td><td>${h(a.atype)}</td><td></td><td>${a.status}</td><td>${a.scored}</td><td>${pct(a.got,a.scored)}</td>${isAdmin()?`<td><button class="g r" onclick="event.stopPropagation();delA('${a.id}')">Remove</button></td>`:''}</tr>`).join('')}</table></div><div id="ae"></div>`;
 }
-async function delA(id){if(!confirm('Remove this assessment and ALL its scores? This cannot be undone.\n(Gaps already generated from it are kept.)'))return;
+async function delA(id){if(!isAdmin())return alert('Only the admin login can remove assessments.');if(!confirm('Remove this assessment and ALL its scores? This cannot be undone.\n(Gaps already generated from it are kept.)'))return;
   let r=await sb.from('scores').delete().eq('assessment_id',id);if(r.error)return alert(r.error.message+'\nIf this is a permission error, run migration.sql in Supabase.');
   await sb.from('gaps').update({assessment_id:null}).eq('assessment_id',id);
   r=await sb.from('assessments').delete().eq('id',id);if(r.error)return alert(r.error.message+'\nIf this is a permission error, run migration.sql in Supabase.');
@@ -355,7 +373,7 @@ function drawA(){
   $('ae').innerHTML=`<div class="card"><div class="row"><b>${h(dn(A.cur.dept_id))} – ${fd(A.cur.assess_date)} (${h(A.cur.atype)}) · ${A.cur.status}</b><span class="sm">${done} of ${A.cps.length} items scored</span></div>
   <div class="row"><select onchange="A.sheet=this.value;A.area=null;drawA()">${sheets.map(s=>`<option ${s==A.sheet?'selected':''}>${h(s)}</option>`).join('')}</select>
   <select onchange="A.area=this.value;drawA()">${opts(areas,A.area)}</select>
-  <button class="g" onclick="print()">Print this section</button>${core()?`<button class="g r" onclick="delA('${A.cur.id}')">Remove assessment</button>`:''}
+  <button class="g" onclick="print()">Print this section</button>${isAdmin()?`<button class="g r" onclick="delA('${A.cur.id}')">Remove assessment</button>`:''}
   ${A.cur.status=='draft'&&me.role!='deo'?'<button onclick="finA()">Finalize</button>':''}<button onclick="genGaps()">Generate gaps (score &lt; 2)</button></div>
   ${ph('Assessment Sheet: '+h(A.sheet)+' / Area '+h(A.area),h(dn(A.cur.dept_id))+' | Date of assessment '+fd(A.cur.assess_date)+' | '+h(A.cur.atype)+' | Assessors: '+h(A.cur.assessors),0,1)}
   <div class="wrap"><table><tr><th>Ref</th><th>Checkpoint / Means of verification</th><th>Method</th><th>Score</th><th>Remarks</th></tr>${rows.map(c=>{const s=A.sc[c.id]||{};
@@ -375,7 +393,7 @@ async function genGaps(){
 
 /* ---------- Gaps ---------- */
 async function gaps(){
-  A.g=await all(()=>sb.from('gaps').select('*,checkpoints(me_ref,checkpoint,area,standard,mov)').order('identified_on',{ascending:false}).order('id'));A.pg=1;
+  A.g=await all(()=>sb.from('gaps').select('*,checkpoints(me_ref,checkpoint,area,standard,mov)').order('identified_on',{ascending:false}).order('id'));{const V=vf();A.g=A.g.filter(g=>V(g.dept_id))}A.pg=1;
   $('main').innerHTML=`<div class="card gkc"><div class="row gkr"><select id="gd" onchange="gl()">${dopts('',1)}</select><select id="gs" onchange="gl()"><option value="">All stages</option>${opts(STAGES)}</select><select id="ga" onchange="gl()"><option value="">All areas</option>${'ABCDEFGH'.split('').map(x=>`<option>${x}</option>`).join('')}</select><span id="gkn" class="sm" style="margin-left:auto"></span></div><div class="gkp" id="gkp"></div><div class="wrap" id="gt"></div></div>`;gl()}
 function sq(){clearTimeout(qt);qt=setTimeout(()=>{A.q=$('q').value.trim().toLowerCase();if($('gt'))gl();else if(A.q)go('gaps')},250)}
 function gl(keep){if(!keep)A.pg=1;A.ps=A.ps||15;const d=$('gd').value,s=$('gs').value,a=$('ga').value,w=(A.q||'').split(/\s+/).filter(Boolean);
@@ -414,16 +432,16 @@ addEventListener('beforeprint',()=>{if(A.R&&$('ro')&&$('ro').innerHTML){A.rall=1
 async function runRep(){
   const t=$('rt').value,d=$('rd').value,f=$('rf').value,to=$('rto').value,sub=(d?h(dn(d)):'All departments')+' | '+(f?fd(f):'start')+' to '+fd(to);
   if(t=='ap')return runAP(d,f,to,sub);
-  if(t=='reg'){let q=()=>sb.from('gaps').select('*,checkpoints(me_ref,area)').order('dept_id').order('identified_on').order('id');const G=(await all(q)).filter(g=>inD(g.dept_id,d)&&(!f||g.identified_on>=f)&&g.identified_on<=to);
+  if(t=='reg'){let q=()=>sb.from('gaps').select('*,checkpoints(me_ref,area)').order('dept_id').order('identified_on').order('id');const V=vf(),G=(await all(q)).filter(g=>V(g.dept_id)&&inD(g.dept_id,d)&&(!f||g.identified_on>=f)&&g.identified_on<=to);
     showR({pre:ph('Gap Register',sub),tc:'rpt',th:'<tr><th>#</th><th>Dept</th><th>Ref</th><th>Gap</th><th>Root cause / plan</th><th>Owner</th><th>Priority</th><th>Identified</th><th>Target</th><th>Stage</th></tr>',rows:G.map((g,i)=>`<tr><td>${i+1}</td><td>${h(dn(g.dept_id))}</td><td>${h(g.checkpoints?.me_ref)}</td><td>${h(g.description)}</td><td>${h(g.root_cause)}</td><td>${h(g.owner)}</td><td>${h(g.priority)}</td><td>${fd(g.identified_on)}</td><td>${fd(g.target_date)}</td><td>${h(g.stage)}</td></tr>`),post:sig()})}
   else{const[Ac,Gp]=await Promise.all([all(()=>sb.from('activities').select('*').order('act_date').order('created_at')),all(()=>sb.from('gaps').select('id,description,checkpoints(me_ref)').order('id'))]);
-    const gm={};Gp.forEach(g=>gm[g.id]=g);const R=Ac.filter(a=>inD(a.dept_id,d)&&(!f||a.act_date>=f)&&a.act_date<=to);
+    const gm={};Gp.forEach(g=>gm[g.id]=g);const V=vf(),R=Ac.filter(a=>V(a.dept_id)&&inD(a.dept_id,d)&&(!f||a.act_date>=f)&&a.act_date<=to);
     showR({pre:ph('Date-wise Activity Log',sub),tc:'rpt',th:'<tr><th>Date</th><th>Dept</th><th>Ref</th><th>Stage</th><th>Activity</th><th>Responsible</th><th>Evidence</th></tr>',rows:R.map(a=>`<tr><td>${fd(a.act_date)}</td><td>${h(dn(a.dept_id))}</td><td>${h(gm[a.gap_id]?.checkpoints?.me_ref)}</td><td>${h(a.stage)}</td><td>${h(a.details)}</td><td>${h(a.responsible||a.entered_by_name)}</td><td>${h(a.evidence)}</td></tr>`),post:sig()})}}
 
 /* ---------- Admin (Core only) ---------- */
 async function admin(){
   const P=await all(()=>sb.from('profiles').select('*').order('email')),D=depts.filter(d=>d.active);
-  const RL={pending:'Pending',core:'Core Committee',nodal:'Dept. Nodal',deo:'Data Entry Operator'};
+  const RL={pending:'Pending',core:'Admin / Core Committee',nodal:'Dept. Nodal',deo:'Data Entry Operator'};
   const tops=depts.filter(d=>!d.parent_id||!depts.some(x=>x.id==d.parent_id)),ord=tops.flatMap(d=>[d,...depts.filter(x=>x.parent_id==d.id)]);
   const sum=(role,n)=>role=='core'?'All departments (Core)':n+' of '+D.length+' selected';
   $('main').innerHTML=`<div class="card adc"><div class="row" style="margin-bottom:4px"><h3 style="margin:0">Users</h3><span class="sm">Create logins in Supabase → Authentication → Users. They appear here as “Pending”; assign role and departments.</span></div>
@@ -442,33 +460,137 @@ function tg(){const c=document.body.classList.toggle('nc');try{localStorage.nc=c
 
 /* ===== shared helpers ===== */
 const core=()=>me.role=='core';
+/* Delete rights: only the admin login. */
+const isAdmin=()=>!!me&&me.role=='core'&&(!CFG.admins||!CFG.admins.length||CFG.admins.includes(String(me.email||'').toLowerCase()));
+/* Role wording: "Team Lead" is now "Nodal" */
+const rn=s=>String(s??'').replace(/\bTeam[\s-]*Lead(er)?\b/gi,'Nodal');
+/* Visibility: a Nodal / data-entry login sees only matter of his or her own department(s) (and their wards). Core sees all. */
+const vf=()=>{if(core())return()=>true;const s=new Set(mine().map(d=>String(d.id)));return id=>id!=null&&s.has(String(id))};
+const ordVis=L=>{if(core())return L;const f=vf(),mm=A.m||[];return L.filter(o=>(o.invitees||[]).some(id=>{const x=mm.find(y=>y.id==id);return x&&mds(x).some(f)}))};
 const t12=t=>{if(!t)return'';const[a,b]=t.split(':');return((+a)%12||12)+':'+b+(+a<12?' AM':' PM')};
 const wd=d=>new Date(d+'T00:00').toLocaleDateString('en-GB',{weekday:'long'});
 const mlb=k=>new Date(k+'-01T00:00').toLocaleDateString('en-GB',{month:'short',year:'2-digit'});
 const fx=v=>v==null?'–':Math.round(v*100)/100;
 const phs=(t,s)=>ph(t,s,1).replace('class="ph"','class="ph show"');
-const dsel=(id,sel,first)=>`<select id="${id}">${first||''}${dgrp(depts.filter(d=>d.active),sel)}</select>`;
+const dsel=(id,sel,first)=>`<select id="${id}">${first||''}${dgrp(mine(),sel)}</select>`;
 const chk=(cls,m,on)=>`<label style="display:inline-block;margin:0 14px 6px 0"><input type="checkbox" class="${cls}" value="${m.id}" ${on?'checked':''}> ${h(m.name)} <span class="sm">(${h(m.role||m.designation||'')})</span></label>`;
 
 /* ===== Members ===== */
 const mds=m=>(m.dept_ids&&m.dept_ids.length?m.dept_ids:[m.dept_id]).filter(Boolean).map(String),mdn=m=>mds(m).map(dn).join(', ');
+const mroles=m=>String(rn(m.role)).split(/;\s*/).filter(Boolean);
+const rcls=r=>/^nodal/i.test(r)?'tl':/^member$/i.test(r)?'mb':'';
+const MCATS=[['nodal','Nodal'],['core','Core Committee Members'],['aoc','AOC Nodal']];
+const mcat=(m,k)=>{const R=mroles(m);return k=='nodal'?R.some(r=>/^nodal/i.test(r)):k=='core'?R.some(r=>/^(chairperson|member|overall)/i.test(r)):k=='aoc'?R.some(r=>/AOC Nodal/i.test(r)):true};
+const allRoles=L=>[...new Set(L.flatMap(mroles))].sort((a,b)=>a.localeCompare(b));
+const catOpts=()=>MCATS.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('');
+const roleOpts=L=>allRoles(L).map(r=>`<option value="${h(r)}">${h(r)}</option>`).join('');
+const aocN=m=>[...aocs(m)].sort().map(l=>l+' – '+AOC.find(a=>a[0]==l)[1]);
+/* what each role means – taken from the Quality Team Order dated 17.10.2026 */
+function rdesc(r,m){
+  if(/chair/i.test(r))return'Chairs the Hospital-level NQAS Quality Committee, which coordinates, supervises and monitors quality improvement across all Departments and Service Areas.';
+  if(/overall quality nodal|supervis/i.test(r))return'Overall supervision and coordination of the NQAS Quality Management System: monitors Departmental Quality Teams and AOC-wise activities and places relevant issues before the Main NQAS Quality Committee.';
+  if(/^nodal/i.test(r))return'Departmental Quality Nodal Person'+(m&&mdn(m)?' for '+mdn(m):'')+': coordinates the Departmental Quality Team and periodic assessments, consolidates gaps, facilitates time-bound action plans and follow-up, communicates gaps to the concerned AOC Nodal Person and reports pending issues to the supervisory authority.';
+  if(/AOC Nodal/i.test(r))return'Area of Concern Nodal Person: collects and consolidates gaps from Departmental Quality Teams, identifies common and recurring gaps, coordinates corrective action with Departmental Nodal Persons, monitors progress and reports the AOC status to the supervisory authority.';
+  if(/^member$/i.test(r))return'Member of the Hospital-level NQAS Quality Committee: takes part in planning, monitoring, review of gaps and action plans, and NQAS preparedness.';
+  if(/^[A-H](\s*[&,]\s*[A-H])*\s*[–-]/.test(r))return'Monitors the Area(s) of Concern: '+r.replace(/^[A-H](\s*[&,]\s*[A-H])*\s*[–-]\s*/,'')+'.';
+  return'';
+}
+/* one-line summary for the profile cards */
+function mbrief(m){const R=mroles(m),pri=[/chair/i,/overall quality nodal|supervis/i,/^nodal/i,/AOC Nodal/i,/^member$/i],r=pri.map(p=>R.find(x=>p.test(x))).find(Boolean)||R[0];
+  if(!r)return'No role assigned yet.';const d=rdesc(r,m);return(d||r).split(': ')[0]+(R.length>1?' (+'+(R.length-1)+' more role'+(R.length>2?'s':'')+')':'')}
 async function mem(){
   A.m=await all(()=>sb.from('members').select('*').order('name'));
-  $('main').innerHTML=(core()?`<div class="card"><h3>Add / edit member</h3><div class="row"><input type="hidden" id="mi"><input id="mn" placeholder="Name" size="22"><input id="md" placeholder="Designation" size="18"><details class="mdd"><summary>Departments (<span id="mdc">0</span> selected)</summary><div class="mdl">${dchk(depts.filter(d=>d.active),'mdk',()=>false,`onchange="$('mdc').textContent=document.querySelectorAll('.mdk:checked').length"`)}</div></details><input id="mr" placeholder="Role – Area of Concern (e.g. A & B – Service Provision & Patient Rights)" size="44" list="aocl"><datalist id="aocl"><option value="A – Service Provision"><option value="B – Patient Rights"><option value="A & B – Service Provision & Patient Rights"><option value="C – Inputs"><option value="D – Support Services"><option value="C & D – Inputs & Support Services"><option value="E – Clinical Services"><option value="F – Infection Control"><option value="G – Quality Management"><option value="H – Outcome"><option value="G & H – Quality Management & Outcome"><option value="Team Lead"><option value="Member"></datalist><input id="mp" type="tel" placeholder="Phone" size="14"></div><textarea id="mx" rows="2" placeholder="Roles & responsibilities"></textarea><div class="row" style="margin-top:8px"><button onclick="saveM()">Save member</button><button class="g" onclick="mem()">Clear</button></div></div>`:'')+
-  `<div class="card wrap"><div class="row"><h3 style="margin:0;flex:1">Committee members</h3><input id="msq" type="search" placeholder="Search members…" oninput="mlist()" size="22"><select id="mv" onchange="mlist()"><option value="all">Overall list</option><option value="grp">Department-wise</option></select>${dsel('mf','','<option value="">All departments</option>').replace('<select','<select onchange="mlist()"')}<button class="g" onclick="print()">Print</button></div>${ph('Committee Members','')}<div id="mt"></div></div>`;mlist()}
+  /* one-time rename Team Lead -> Nodal in the database (admin login) */
+  if(isAdmin()){for(const m of A.m.filter(x=>/team[\s-]*lead/i.test(x.role||''))){const r=rn(m.role),{error}=await sb.from('members').update({role:r}).eq('id',m.id);if(!error)m.role=r}}
+  /* Nodal / data-entry logins see only members of their own department(s) */
+  if(!core()){const f=vf();A.m=A.m.filter(m=>mds(m).some(f))}
+  $('main').innerHTML=(core()?`<div class="card"><h3>Add / edit member</h3><div class="row"><input type="hidden" id="mi"><input id="mn" placeholder="Name" size="22"><input id="md" placeholder="Designation" size="18"><details class="mdd"><summary>Departments (<span id="mdc">0</span> selected)</summary><div class="mdl">${dchk(depts.filter(d=>d.active),'mdk',()=>false,`onchange="$('mdc').textContent=document.querySelectorAll('.mdk:checked').length"`)}</div></details><input id="mr" placeholder="Role – e.g. Nodal / Member / A & B – Service Provision & Patient Rights" size="44" list="aocl"><datalist id="aocl"><option value="Nodal"><option value="Member"><option value="Chairperson"><option value="Overall Quality Nodal Person"><option value="A – Service Provision (AOC Nodal)"><option value="B – Patient Rights (AOC Nodal)"><option value="C – Inputs (AOC Nodal)"><option value="D – Support Services (AOC Nodal)"><option value="E – Clinical Services (AOC Nodal)"><option value="F – Infection Control (AOC Nodal)"><option value="G – Quality Management (AOC Nodal)"><option value="H – Outcome (AOC Nodal)"><option value="A – Service Provision"><option value="B – Patient Rights"><option value="A & B – Service Provision & Patient Rights"><option value="C – Inputs"><option value="D – Support Services"><option value="C & D – Inputs & Support Services"><option value="E – Clinical Services"><option value="F – Infection Control"><option value="G – Quality Management"><option value="H – Outcome"><option value="G & H – Quality Management & Outcome"></datalist><input id="mp" type="tel" placeholder="Phone" size="14"></div><textarea id="mx" rows="2" placeholder="Roles & responsibilities"></textarea><div class="row" style="margin-top:8px"><button onclick="saveM()">Save member</button><button class="g" onclick="mem()">Clear</button>${isAdmin()?'<span style="flex:1"></span><button class="g" onclick="impPrev()" title="Add the members, designations and roles listed in the Quality Team Order dated 17.10.2026">Import members from Quality Team Order</button>':''}</div></div>`:'')+
+  `<div class="card wrap"><div class="row"><h3 style="margin:0;flex:1">Committee members</h3><input id="msq" type="search" placeholder="Search members…" oninput="mlist()" size="22"><select id="mv" onchange="mlist()"><option value="all">Overall list</option><option value="grp">Department-wise</option><option value="card">Profile cards</option></select><select id="mc" onchange="mlist()"><option value="">All categories</option>${catOpts()}</select><select id="mrl" onchange="mlist()"><option value="">All roles</option>${roleOpts(A.m)}</select>${dsel('mf','','<option value="">All departments</option>').replace('<select','<select onchange="mlist()"')}<button class="g" onclick="print()">Print</button></div>${ph('Committee Members','')}<div id="mt"></div></div>`;mlist()}
 const avI=n=>{const w=String(n||'').replace(/^(dr|mr|mrs|miss|ms|smt|sri|prof)\.?\s+/i,'').trim().split(/\s+/);return((w[0]||'')[0]||'?')+((w[1]||'')[0]||'')},avC=n=>['#4285f4,#24c1e0','#ea4335,#fbbc04','#34a853,#4285f4','#fbbc04,#ea4335'][[...String(n)].reduce((p,c)=>p+c.charCodeAt(0),0)%4];
-function mlist(){const f=$('mf').value,q=($('msq')?.value||'').toLowerCase(),g=$('mv').value=='grp',L=A.m.filter(m=>(!f||mds(m).some(x=>inD(x,f)))&&(!q||[m.name,m.designation,m.role,m.phone,m.responsibilities,mdn(m)].join(' ').toLowerCase().includes(q))),c=core(),
-  row=(m,i)=>{const ds=mds(m).map(x=>`<span class="dc">${h(dn(x))}</span>`).join('')||'<span class="sm">—</span>',rl=String(m.role||'').split(/;\s*/).filter(Boolean).map(r=>`<span class="rc ${/^team lead/i.test(r)?'tl':/^member$/i.test(r)?'mb':''}">${h(r)}</span>`).join('');
-    return`<tr><td class="mi">${i+1}</td><td><div class="mn"><span class="av" style="background:linear-gradient(135deg,${avC(m.name)})">${h(avI(m.name))}</span><div><b>${h(m.name)}</b><div class="sm">${h(m.designation)}</div></div></div></td><td>${ds}</td><td>${rl}</td><td><div class="rcl" title="Click to expand" onclick="this.classList.toggle('open')">${h(m.responsibilities)}</div></td><td class="nw">${m.phone?`<a href="tel:${h(m.phone)}">${h(m.phone)}</a>`:''}</td>${c?`<td class="np nw"><button class="g ab" onclick="editM(${m.id})">Edit</button> <button class="g r ab" onclick="delM(${m.id})">Delete</button></td>`:''}</tr>`},
-  hd=`<tr><th>#</th><th>Member</th><th>Department</th><th>Role (Area of Concern)</th><th>Responsibilities</th><th>Phone</th>${c?'<th class="np"></th>':''}</tr>`;
+const avH=(m,c)=>`<span class="av ${c||''}" style="background:linear-gradient(135deg,${avC(m.name)})">${h(avI(m.name))}</span>`;
+function mlist(){const f=$('mf').value,q=($('msq')?.value||'').toLowerCase(),v=$('mv').value,g=v=='grp',mc=$('mc').value,mr=$('mrl').value,L=A.m.filter(m=>(!f||mds(m).some(x=>inD(x,f)))&&(!mc||mcat(m,mc))&&(!mr||mroles(m).includes(mr))&&(!q||[m.name,m.designation,m.role,rn(m.role),m.phone,m.responsibilities,mdn(m)].join(' ').toLowerCase().includes(q))),c=core(),ad=isAdmin(),
+  row=(m,i)=>{const ds=mds(m).map(x=>`<span class="dc">${h(dn(x))}</span>`).join('')||'<span class="sm">—</span>',rl=mroles(m).map(r=>`<span class="rc ${rcls(r)}">${h(r)}</span>`).join('');
+    return`<tr><td class="mi">${i+1}</td><td><div class="mn">${avH(m)}<div><b class="pl" onclick="profM(${m.id})" title="Open profile">${h(m.name)}</b><div class="sm">${h(m.designation)}</div></div></div></td><td>${ds}</td><td>${rl}</td><td><div class="rcl" title="Click to expand" onclick="this.classList.toggle('open')">${h(m.responsibilities)}</div></td><td class="nw">${m.phone?`<a href="tel:${h(m.phone)}">${h(m.phone)}</a>`:''}</td><td class="np nw"><button class="g ab" onclick="profM(${m.id})">Profile</button>${c?` <button class="g ab" onclick="editM(${m.id})">Edit</button>`:''}${ad?` <button class="g r ab" onclick="delM(${m.id})">Delete</button>`:''}</td></tr>`},
+  hd=`<tr><th>#</th><th>Member</th><th>Department</th><th>Role</th><th>Responsibilities</th><th>Phone</th><th class="np"></th></tr>`;
   let b;
-  if(g){const ids=depts.filter(d=>d.active&&(!f||inD(d.id,f)));b=ids.map(d=>{const M=L.filter(m=>mds(m).includes(String(d.id)));return M.length?`<tr class="dh"><td colspan="${c?7:6}"><b>${h(dn(d.id))}</b> — ${M.length} member(s)</td></tr>`+M.map(row).join(''):''}).join('')}
+  if(v=='card'){$('mt').innerHTML=`<div class="pcg">${L.map(m=>`<div class="pcard"><div class="mn">${avH(m)}<div><b class="pl" onclick="profM(${m.id})">${h(m.name)}</b><div class="sm">${h(m.designation)}</div></div></div><div class="pcd">${mds(m).map(x=>`<span class="dc">${h(dn(x))}</span>`).join('')||'<span class="sm">No department assigned</span>'}</div><div>${mroles(m).map(r=>`<span class="rc ${rcls(r)}">${h(r)}</span>`).join('')||'<span class="sm">No role assigned</span>'}</div><p class="sm pcb">${h(mbrief(m))}</p>${m.phone?`<div class="sm">☎ ${h(m.phone)}</div>`:''}<button class="g ab np" onclick="profM(${m.id})">View profile</button></div>`).join('')||'<p class="sm">No members found</p>'}</div><p class="sm">${L.length} member(s)</p>`;return}
+  if(g){const ids=depts.filter(d=>d.active&&(!f||inD(d.id,f)));b=ids.map(d=>{const M=L.filter(m=>mds(m).includes(String(d.id)));return M.length?`<tr class="dh"><td colspan="7"><b>${h(dn(d.id))}</b> — ${M.length} member(s)</td></tr>`+M.map(row).join(''):''}).join('')}
   else b=L.map(row).join('');
   $('mt').innerHTML=`<table>${hd}${b}</table><p class="sm">${L.length} member(s)${g?' (a member appears under each of their departments)':''}</p>`}
-function editM(id){const m=A.m.find(x=>x.id==id);$('mi').value=m.id;$('mn').value=m.name;$('md').value=m.designation||'';document.querySelectorAll('.mdk').forEach(c=>c.checked=mds(m).includes(c.value));$('mdc').textContent=mds(m).length;$('mr').value=m.role||'';$('mp').value=m.phone||'';$('mx').value=m.responsibilities||'';scrollTo(0,0)}
-async function saveM(){const ds=[...document.querySelectorAll('.mdk:checked')].map(c=>c.value),o={name:$('mn').value.trim(),designation:$('md').value,dept_id:ds[0]||null,dept_ids:ds,role:$('mr').value,phone:$('mp').value,responsibilities:$('mx').value};if(!o.name)return alert('Enter name');const i=$('mi').value;
+/* ----- member profile ----- */
+function profM(id){const m=A.m.find(x=>x.id==id);if(!m)return;const R=mroles(m),an=aocN(m),ds=mds(m);
+  $('mbox').innerHTML=`<div class="row np"><button onclick="pm()">Print profile</button><button class="g" onclick="cm()">Close</button></div>
+  <div class="od mprof">${LH()}<div class="o1">MEMBER PROFILE</div>
+  <div class="pfh">${avH(m,'big')}<div><div class="pfn">${h(m.name)}</div><div>${h(m.designation)||'<span class="sm">Designation not recorded</span>'}</div><div style="margin-top:4px">${R.map(r=>`<span class="rc ${rcls(r)}">${h(r)}</span>`).join('')}</div></div></div>
+  <table class="pft"><tr><th>Name</th><td>${h(m.name)}</td></tr><tr><th>Designation</th><td>${h(m.designation)}</td></tr>
+  <tr><th>Department / Service area</th><td>${ds.map(x=>`<span class="dc">${h(dn(x))}</span>`).join('')||'—'}</td></tr>
+  <tr><th>Role(s) assigned</th><td>${R.length?`<ul class="pfl">${R.map(r=>`<li><b>${h(r)}</b>${rdesc(r,m)?`<div class="sm">${h(rdesc(r,m))}</div>`:''}</li>`).join('')}</ul>`:'No role assigned yet'}</td></tr>
+  ${an.length?`<tr><th>Area(s) of Concern</th><td>${an.map(x=>`<span class="dc">${h(x)}</span>`).join('')}</td></tr>`:''}
+  <tr><th>Roles &amp; responsibilities</th><td class="pw">${h(m.responsibilities)||'—'}</td></tr>
+  <tr><th>Phone</th><td>${h(m.phone)||'—'}</td></tr></table>
+  <p class="sm">Source: Quality Team Order, Chandannagar Sub-Divisional Hospital (17.10.2026), and details recorded in this portal.</p></div>`;
+  $('modal').style.display='block'}
+function editM(id){const m=A.m.find(x=>x.id==id);$('mi').value=m.id;$('mn').value=m.name;$('md').value=m.designation||'';document.querySelectorAll('.mdk').forEach(c=>c.checked=mds(m).includes(c.value));$('mdc').textContent=mds(m).length;$('mr').value=rn(m.role||'');$('mp').value=m.phone||'';$('mx').value=m.responsibilities||'';scrollTo(0,0)}
+async function saveM(){const ds=[...document.querySelectorAll('.mdk:checked')].map(c=>c.value),o={name:$('mn').value.trim(),designation:$('md').value,dept_id:ds[0]||null,dept_ids:ds,role:rn($('mr').value),phone:$('mp').value,responsibilities:$('mx').value};if(!o.name)return alert('Enter name');const i=$('mi').value;
   const{error}=i?await sb.from('members').update(o).eq('id',i):await sb.from('members').insert(o);if(error)return alert(error.message+(/dept_ids/.test(error.message)?'\nRun migration.sql in Supabase first.':''));mem()}
-async function delM(id){if(!confirm('Delete this member?'))return;const{error}=await sb.from('members').delete().eq('id',id);if(error)return alert(error.message);mem()}
+async function delM(id){if(!isAdmin())return alert('Only the admin login can delete members.');if(!confirm('Delete this member?'))return;const{error}=await sb.from('members').delete().eq('id',id);if(error)return alert(error.message);mem()}
+
+/* ----- import of the people named in the Quality Team Order dated 17.10.2026 ----- */
+const RESP={chair:'Chairs the Hospital-level NQAS Quality Committee.',member:'Member of the Hospital-level NQAS Quality Committee: planning and coordination, monitoring and assessment, review of action plans and compliance, NQAS preparedness.',overall:'Overall supervision and coordination of the NQAS Quality Management System; monitors Departmental Quality Teams and AOC-wise activities and places issues before the Main NQAS Quality Committee.',nodal:'Departmental Quality Nodal Person: coordinates the Departmental Quality Team, coordinates periodic assessments and consolidates gaps, facilitates time-bound action plans and follow-up of corrective measures, communicates gaps to the AOC Nodal Person, reviews departmental progress and reports pending issues to the supervisory authority.',aoc:'AOC Nodal Person: collects and consolidates gaps reported by Departmental Quality Teams, identifies common and recurring gaps, coordinates corrective action with Departmental Nodal Persons, monitors progress and compiles the AOC status for the supervisory authority.'};
+/* k: c=Chairperson m=Member o=Overall Quality Nodal Person s=Overall Supervisory Officer n=Dept. Nodal; dp: departments; a: AOC letters */
+const ORDER_PEOPLE=[
+ {n:'Dr. Ranjan Kumar Dey',d:'Superintendent',k:'c'},
+ {n:'Dr. Dipak Kr. Biswas',d:'Senior Medical Officer',k:'mn',dp:['Emergency']},
+ {n:'Dr. Anindya Addhya',d:'Medical Officer',k:'mn',dp:['Lab'],a:'E'},
+ {n:'Mrs. Sulagna Mondal',d:'Nursing Superintendent',k:'m'},
+ {n:'Mrs. Susama Chatterjee',d:'Dy. Nursing Superintendent',k:'m',a:'C'},
+ {n:'Mrs. Debalina Chakraborty',d:'Asst. Superintendent Gr-II (NM)',k:'os',a:'BH'},
+ {n:'Mrs. Priyanka Porel',d:'Asst. Superintendent Gr-II (NM)',k:'sn',dp:['General Admin'],a:'AG'},
+ {n:'Mrs. Uma Pandey',d:'Infection Control Nurse (ICN)',k:'m',a:'F'},
+ {n:'Mr. Taraknath Das',d:'Pharmacist',k:'m'},
+ {n:'Mr. Amit Kumar Dhar',d:'Accountant',k:'m'},
+ {n:'Dr. Kamal Haldar',d:'H.M.O.',k:'n',dp:['OPD']},
+ {n:'Dr. Banhisikha Modak',d:'Medical Officer (Specialist)',k:'n',dp:['Labour Room']},
+ {n:'Dr. Uttam Saha',d:'Medical Officer (Specialist)',k:'n',dp:['Paediatric OPD']},
+ {n:'Dr. Papiya Bandyopadhyay',d:'Medical Officer (Specialist)',k:'n',dp:['OT']},
+ {n:'Dr. Jayanta Patra',d:'Medical Officer (Specialist)',k:'n',dp:['Maternity OT']},
+ {n:'Dr. Mrinal Kanti Saha',d:'Medical Officer (Specialist)',k:'n',dp:['IPD']},
+ {n:'Dr. Aparajita Maji Mondal',d:'Medical Officer (Specialist)',k:'n',dp:['Blood Bank'],a:'A'},
+ {n:'Dr. Subrata Das',d:'Medical Officer (Specialist)',k:'n',dp:['Pharmacy']},
+ {n:'Dr. Dhyanabrata Mondal',d:'Medical Officer (Specialist)',k:'n',dp:['SNCU']},
+ {n:'Dr. Soumyadeb Majumdar',d:'Medical Officer (Specialist)',k:'n',dp:['Radiology']},
+ {n:'Mrs. Shrabana Sarkar',d:'FSO',k:'n',dp:['Auxiliary']},
+ {n:'Mrs. Mithu Sen',d:'Dy. Nursing Superintendent',k:'',a:'B'},
+ {n:'Mrs. Kakali Deb',d:'Dy. Nursing Superintendent',k:'',a:'D'},
+ {n:'Mrs. Mitali Chakraborty',d:'Jt. Nursing Superintendent',k:'',a:'E'},
+ {n:'Dr. Manjula De',d:'Medical Officer',k:'',a:'F'},
+ {n:'Mrs. Jayeeta Sen',d:'Dy. Nursing Superintendent',k:'',a:'F'},
+ {n:'Mr. Arnab Bandopadhyay',d:'LDC',k:'',a:'GH'},
+ {n:'Sk Imran Rahaman',d:'Executive Assistant',k:'',a:'GH'}];
+const DALIAS={'emergency':['emergency','casualty'],'opd':['opd','out patient department','outpatient department'],'labour room':['labour room','labor room'],'paediatric opd':['paediatric opd','pediatric opd','paediatrics opd','pediatrics opd'],'ot':['ot','operation theatre','operation theater'],'maternity ot':['maternity ot'],'ipd':['ipd','inpatient department','in patient department'],'blood bank':['blood bank','bloodbank'],'lab':['lab','laboratory','pathology'],'pharmacy':['pharmacy'],'sncu':['sncu'],'radiology':['radiology','radiology and imaging'],'auxiliary':['auxiliary','auxiliary services'],'general admin':['general admin','general administration']};
+const nz=s=>String(s||'').toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+const nmk=s=>nz(String(s||'').replace(/\b(dr|mr|mrs|miss|ms|smt|sri|prof)\b\.?/gi,'').replace(/\bkr\b\.?/gi,'kumar')).replace(/\s+/g,' ').trim();
+const findDept=nm=>{const al=DALIAS[nz(nm)]||[nz(nm)],c=depts.filter(d=>al.includes(nz(d.name)));return c.find(d=>d.active&&!d.parent_id)||c.find(d=>d.active)||c[0]};
+const findMem=p=>{const k=nmk(p.n),t=k.split(' ');return A.m.find(m=>nmk(m.name)==k)||A.m.find(m=>{const u=nmk(m.name).split(' ');return u.length>1&&t.length>1&&u[0]==t[0]&&u[u.length-1]==t[t.length-1]})};
+function orderRec(p){const R=[],X=[];const K=p.k||'';
+  if(K.includes('c')){R.push('Chairperson');X.push(RESP.chair)}if(K.includes('m')){R.push('Member');X.push(RESP.member)}
+  if(K.includes('o')){R.push('Overall Quality Nodal Person');X.push(RESP.overall)}else if(K.includes('s')){R.push('Overall Supervisory Officer');X.push(RESP.overall)}
+  if(K.includes('n')){R.push('Nodal');X.push(RESP.nodal)}
+  [...(p.a||'')].forEach(l=>R.push(l+' – '+AOC.find(a=>a[0]==l)[1]+' (AOC Nodal)'));if(p.a){X.push(RESP.aoc)}
+  const ds=(p.dp||[]).map(findDept);return{name:p.n,designation:p.d,dp:p.dp||[],ds,role:R.join('; '),responsibilities:X.join(' ')}}
+function impPlan(){return ORDER_PEOPLE.map(p=>{const r=orderRec(p),ex=findMem(p);let st='new',up=null;
+  if(ex){const have=mroles(ex).map(x=>x.toLowerCase()),add=r.role.split('; ').filter(x=>x&&!have.includes(x.toLowerCase())),ids=new Set(mds(ex)),nd=r.ds.filter(Boolean).map(d=>String(d.id)).filter(i=>!ids.has(i));
+    up={};if(!ex.designation&&r.designation)up.designation=r.designation;if(add.length)up.role=[...mroles(ex),...add].join('; ');if(nd.length){const all=[...mds(ex),...nd];up.dept_ids=all;up.dept_id=all[0]}if(!ex.responsibilities&&r.responsibilities)up.responsibilities=r.responsibilities;
+    st=Object.keys(up).length?'update':'same'}
+  return{p,r,ex,st,up}})}
+function impPrev(){if(!isAdmin())return;A.imp=impPlan();const I=A.imp,n=I.filter(x=>x.st=='new').length,u=I.filter(x=>x.st=='update').length,miss=[...new Set(I.flatMap(x=>x.r.dp.filter((d,i)=>!x.r.ds[i])))];
+  $('mbox').innerHTML=`<div class="row np"><button onclick="impRun()" ${n+u?'':'disabled'}>Import (${n} new, ${u} to update)</button><button class="g" onclick="cm()">Cancel</button></div><h3>Import members – Quality Team Order dated 17.10.2026</h3><p class="sm">Adds the committee members, departmental nodal persons and AOC nodal persons named in the order, with designation, department and role. New people are added; people already in the list only get missing details filled in (nothing is overwritten).</p>${miss.length?`<p class="bad">Department(s) not found in this portal: ${h(miss.join(', '))}. These people will be added without that department – assign it later with Edit, or add the department in Admin first and re-run.</p>`:''}
+  <div class="wrap"><table><tr><th>#</th><th>Name</th><th>Designation</th><th>Department</th><th>Role</th><th>Action</th></tr>${I.map((x,i)=>`<tr><td>${i+1}</td><td>${h(x.p.n)}</td><td>${h(x.r.designation)}</td><td>${x.r.dp.map((d,j)=>x.r.ds[j]?h(dn(x.r.ds[j].id)):'<span class="bad">'+h(d)+' ?</span>').join(', ')||'—'}</td><td>${h(x.r.role)||'—'}</td><td>${{new:'<span class="tag">New</span>',update:'<span class="tag">Fill missing</span>',same:'<span class="sm">Already present</span>'}[x.st]}${x.ex?`<div class="sm">matches “${h(x.ex.name)}”</div>`:''}</td></tr>`).join('')}</table></div>`;
+  $('modal').style.display='block'}
+async function impRun(){if(!isAdmin())return;const I=A.imp||[],N=I.filter(x=>x.st=='new').map(x=>{const ds=x.r.ds.filter(Boolean).map(d=>String(d.id));return{name:x.r.name,designation:x.r.designation,dept_id:ds[0]||null,dept_ids:ds,role:x.r.role,responsibilities:x.r.responsibilities}});let ok=0;
+  if(N.length){const{error}=await sb.from('members').insert(N);if(error)return alert(error.message+(/dept_ids/.test(error.message)?'\nRun migration.sql in Supabase first.':''));ok+=N.length}
+  let upd=0;for(const x of I.filter(x=>x.st=='update')){const{error}=await sb.from('members').update(x.up).eq('id',x.ex.id);if(error)return alert(error.message);upd++}
+  cm();alert('Added '+ok+' member(s); updated '+upd+'.');mem()}
 
 /* ===== Orders (meeting / training / team-committee / general) ===== */
 const OT=['Meeting','Training','Constitution of Team / Committee','General Office Order'];
@@ -478,7 +600,7 @@ function otf(){const c=OC[$('ok').value];$('ld').textContent=c.d;$('la').textCon
 async function mtg(){
   A.sel=[];A.pkm='';
   [A.M,A.m]=await Promise.all([all(()=>sb.from('meetings').select('*').order('meeting_date',{ascending:false})),all(()=>sb.from('members').select('*').order('name'))]);
-  const n=A.M.length+1;
+  const n=A.M.length+1;A.M=ordVis(A.M);
   $('main').innerHTML=(core()?`<details class="card ordn"><summary><h3>New order</h3><span class="sm">Meeting, training or any other order</span><span class="ordp">＋ Create</span></summary>
   <div class="og">
     <label class="f"><span>Order type</span><select id="ok" onchange="otf()">${opts(OT)}</select></label>
@@ -504,31 +626,31 @@ All Members of the Committee
 Office Copy</textarea></label>
   </div>
   <div class="pkb"><h4 style="margin:0 0 8px"><span id="lp"></span> – select members</h4>
-  <div class="row"><select id="pc" onchange="pkc()"><option value="all">Overall (all members)</option><option value="dept">Department-wise</option><option value="aoc">Area of Concern-wise</option></select><select id="pv" onchange="pk()" style="display:none"></select><input id="pq" placeholder="Search name / designation…" oninput="pk()" size="26"><button class="g" onclick="pkAll(true)">Add all shown</button></div>
+  <div class="row"><select id="pc" onchange="pkc()"><option value="all">Overall (all members)</option><option value="dept">Department-wise</option><option value="aoc">Area of Concern-wise</option><option value="cat">Category-wise</option><option value="role">Role-wise</option></select><select id="pv" onchange="pk()" style="display:none"></select><input id="pq" placeholder="Search name / designation…" oninput="pk()" size="26"><button class="g" onclick="pkAll(true)">Add all shown</button></div>
   <div class="pkl" id="pa"></div>
   <h4 style="margin:12px 0 6px">Selected members (<span id="pn">0</span>) <button class="g" onclick="A.sel=[];pk()">Clear</button></h4>
   <div class="pkl" id="ps"></div></div>
   <div class="row" style="margin-top:10px"><button onclick="saveMtg()">Generate order</button></div></details>`:'')+
-  `<div class="card wrap ordc"><div class="row" style="margin-bottom:4px"><h3 style="margin:0;flex:1">Orders</h3><span class="sm">${A.M.length} total</span></div><table class="rtab"><tr><th>Memo No.</th><th>Date</th><th>Type</th><th>Subject</th><th>Event / effective</th><th></th></tr>${A.M.map(m=>`<tr><td data-l="Memo">${h(m.order_no)}</td><td data-l="Date">${fd(m.order_date)}</td><td><span class="tag">${h(otk(m))}</span></td><td class="t">${h(m.title)}</td><td data-l="Event">${fd(m.meeting_date)}</td><td class="ra2"><button class="g" onclick="openOrder(${m.id})">Order</button>${otk(m)=='Meeting'?` <button class="g" onclick="go('res');setTimeout(()=>openRes(${m.id}),400)">Resolution</button>`:''}${core()?` <button class="g" onclick="delMtg(${m.id})">Delete</button>`:''}</td></tr>`).join('')||'<tr><td colspan="6" class="sm">No orders yet</td></tr>'}</table></div>`;
+  `<div class="card wrap ordc"><div class="row" style="margin-bottom:4px"><h3 style="margin:0;flex:1">Orders</h3><span class="sm">${A.M.length} total</span></div><table class="rtab"><tr><th>Memo No.</th><th>Date</th><th>Type</th><th>Subject</th><th>Event / effective</th><th></th></tr>${A.M.map(m=>`<tr><td data-l="Memo">${h(m.order_no)}</td><td data-l="Date">${fd(m.order_date)}</td><td><span class="tag">${h(otk(m))}</span></td><td class="t">${h(m.title)}</td><td data-l="Event">${fd(m.meeting_date)}</td><td class="ra2"><button class="g" onclick="openOrder(${m.id})">Order</button>${otk(m)=='Meeting'?` <button class="g" onclick="go('res');setTimeout(()=>openRes(${m.id}),400)">Resolution</button>`:''}${isAdmin()?` <button class="g r" onclick="delMtg(${m.id})">Delete</button>`:''}</td></tr>`).join('')||'<tr><td colspan="6" class="sm">No orders yet</td></tr>'}</table></div>`;
   if(core()){otf();pkc()}}
 /* ===== Member picker for orders ===== */
 const AOC=[['A','Service Provision'],['B','Patient Rights'],['C','Inputs'],['D','Support Services'],['E','Clinical Services'],['F','Infection Control'],['G','Quality Management'],['H','Outcome']];
 const aocs=m=>{const r=new Set();for(const x of String(m.role||'').matchAll(/(?:^|;\s*)([A-H](?:\s*[&,]\s*[A-H])*)\s*[–-]/g))(x[1].match(/[A-H]/g)||[]).forEach(l=>r.add(l));return r};
-function pkc(){const c=$('pc').value,v=$('pv');v.style.display=(c=='dept'||c=='aoc')?'':'none';v.innerHTML=c=='dept'?'<option value="">All departments</option>'+dgrp(depts.filter(d=>d.active)):c=='aoc'?'<option value="">All areas of concern</option>'+AOC.map(a=>`<option value="${a[0]}">${a[0]} – ${a[1]}</option>`).join(''):'';pk()}
+function pkc(){const c=$('pc').value,v=$('pv');v.style.display=(c=='dept'||c=='aoc'||c=='cat'||c=='role')?'':'none';v.innerHTML=c=='cat'?'<option value="">All categories</option>'+catOpts():c=='role'?'<option value="">All roles</option>'+roleOpts(A.m):c=='dept'?'<option value="">All departments</option>'+dgrp(depts.filter(d=>d.active)):c=='aoc'?'<option value="">All areas of concern</option>'+AOC.map(a=>`<option value="${a[0]}">${a[0]} – ${a[1]}</option>`).join(''):'';pk()}
 function pk(){const c=$('pc').value,v=$('pv').value,q=$('pq').value.toLowerCase(),on=id=>A.sel.some(x=>x.id==id);
-  A.pl=A.m.filter(m=>(c=='inv'?(A.rm.invitees||[]).includes(m.id):c=='dept'?(!v||mds(m).some(x=>inD(x,v))):c=='aoc'?(!v||aocs(m).has(v)):true)&&(!q||[m.name,m.designation,m.role,mdn(m)].join(' ').toLowerCase().includes(q)));
-  $('pa').innerHTML=`<table class="pk"><tr><th style="width:30px"></th><th>Name</th><th>Designation</th><th>Department</th><th>Role</th></tr>${A.pl.map(m=>`<tr class="${on(m.id)?'on':''}" onclick="pkT(${m.id})"><td><input type="checkbox" ${on(m.id)?'checked':''} onclick="event.stopPropagation();pkT(${m.id})"></td><td>${h(m.name)}</td><td>${h(m.designation)}</td><td>${h(mdn(m))}</td><td>${h(m.role)}</td></tr>`).join('')||'<tr><td colspan="5" class="sm">No members in this selection</td></tr>'}</table>`;
+  A.pl=A.m.filter(m=>(c=='inv'?(A.rm.invitees||[]).includes(m.id):c=='dept'?(!v||mds(m).some(x=>inD(x,v))):c=='aoc'?(!v||aocs(m).has(v)):c=='cat'?(!v||mcat(m,v)):c=='role'?(!v||mroles(m).includes(v)):true)&&(!q||[m.name,m.designation,m.role,mdn(m)].join(' ').toLowerCase().includes(q)));
+  $('pa').innerHTML=`<table class="pk"><tr><th style="width:30px"></th><th>Name</th><th>Designation</th><th>Department</th><th>Role</th></tr>${A.pl.map(m=>`<tr class="${on(m.id)?'on':''}" onclick="pkT(${m.id})"><td><input type="checkbox" ${on(m.id)?'checked':''} onclick="event.stopPropagation();pkT(${m.id})"></td><td>${h(m.name)}</td><td>${h(m.designation)}</td><td>${h(mdn(m))}</td><td>${h(rn(m.role))}</td></tr>`).join('')||'<tr><td colspan="5" class="sm">No members in this selection</td></tr>'}</table>`;
   $('pn').textContent=A.sel.length;
   $('ps').innerHTML=A.sel.length?`<table class="pk"><tr><th style="width:30px">#</th><th>Name</th><th>Designation</th><th>${A.pkm=='att'?'Department':'Role in this order'}</th><th style="width:30px"></th></tr>${A.sel.map((x,i)=>{const m=A.m.find(y=>y.id==x.id);return`<tr><td>${i+1}</td><td>${h(m.name)}</td><td>${h(m.designation)}</td><td>${A.pkm=='att'?h(mdn(m)):`<input value="${h(x.role)}" size="30" oninput="A.sel[${i}].role=this.value">`}</td><td><button class="g" onclick="pkT(${m.id})">✕</button></td></tr>`}).join('')}</table>`:'<p class="sm" style="padding:8px">No members selected yet</p>'}
-function pkT(id){const i=A.sel.findIndex(x=>x.id==id);if(i>=0)A.sel.splice(i,1);else A.sel.push({id,role:A.m.find(m=>m.id==id).role||''});pk()}
-function pkAll(on){A.pl.forEach(m=>{const i=A.sel.findIndex(x=>x.id==m.id);if(on&&i<0)A.sel.push({id:m.id,role:m.role||''})});pk()}
+function pkT(id){const i=A.sel.findIndex(x=>x.id==id);if(i>=0)A.sel.splice(i,1);else A.sel.push({id,role:rn(A.m.find(m=>m.id==id).role||'')});pk()}
+function pkAll(on){A.pl.forEach(m=>{const i=A.sel.findIndex(x=>x.id==m.id);if(on&&i<0)A.sel.push({id:m.id,role:rn(m.role||'')})});pk()}
 async function saveMtg(){if(!$('mdt').value)return alert('Select the date');const roles={},inv=A.sel.map(x=>x.id),cv=$('ocv').value;A.sel.forEach(x=>roles[x.id]=x.role);if($('ok').value=='Meeting'&&cv){roles[cv]='Member-Convenor';if(!inv.includes(+cv))inv.push(+cv)}
   const o={order_type:$('ok').value,title:$('ot').value,order_no:$('on').value,order_date:$('od').value,meeting_date:$('mdt').value,meeting_time:$('mtm').value||null,venue:$('mv').value,issued_by:$('oi').value,agenda:$('oa').value.split('\n').map(x=>x.trim()).filter(Boolean),invitees:inv,details:{convenor:cv||null,purpose:$('op').value,closing:$('oc').value,copy:$('ocp').value.split('\n').map(x=>x.trim()).filter(Boolean),date_to:$('mdt2').value,trainer:$('otr').value,roles}};
   const{data,error}=await sb.from('meetings').insert(o).select().single();if(error)return alert(error.message+(/order_type|details/.test(error.message)?'\nRun migration.sql in the Supabase SQL editor first.':''));await mtg();openOrder(data.id)}
-async function delMtg(id){if(!confirm('Delete this order and its resolution?'))return;const{error}=await sb.from('meetings').delete().eq('id',id);if(error)return alert(error.message);mtg()}
+async function delMtg(id){if(!isAdmin())return alert('Only the admin login can delete orders.');if(!confirm('Delete this order and its resolution?'))return;const{error}=await sb.from('meetings').delete().eq('id',id);if(error)return alert(error.message);mtg()}
 function openOrder(id){const m=A.M.find(x=>x.id==id),k=otk(m),d=m.details||{},R=d.roles||{},T=h(m.title),ro=x=>{const r=String(R[x.id]??x.role??'').toLowerCase();return r.includes('chair')?0:r.includes('convenor')?1:2},
   inv=A.m.filter(x=>(m.invitees||[]).includes(x.id)).sort((a,b)=>ro(a)-ro(b)),dt=`${wd(m.meeting_date)}, ${fd(m.meeting_date)}`,tm=m.meeting_time?' at <b>'+t12(m.meeting_time)+'</b>':'',pu=d.purpose?h(d.purpose.trim().replace(/[,.:;]?$/,','))+' ':'',ag=m.agenda||[];
-  const tbl=`<table style="width:100%"><tr><th>Sl.</th><th>Name</th><th>Designation</th><th>${k.startsWith('Const')?'Role in Committee':'Role'}</th><th>Department</th></tr>${inv.map((x,i)=>`<tr><td>${i+1}</td><td>${h(x.name)}</td><td>${h(x.designation)}</td><td>${h(R[x.id]??x.role)}</td><td>${h(mdn(x))}</td></tr>`).join('')}</table>`;
+  const tbl=`<table style="width:100%"><tr><th>Sl.</th><th>Name</th><th>Designation</th><th>${k.startsWith('Const')?'Role in Committee':'Role'}</th><th>Department</th></tr>${inv.map((x,i)=>`<tr><td>${i+1}</td><td>${h(x.name)}</td><td>${h(x.designation)}</td><td>${h(rn(R[x.id]??x.role))}</td><td>${h(mdn(x))}</td></tr>`).join('')}</table>`;
   let b='';
   if(k=='Meeting')b=`<p>${pu||'In connection with the preparation for the National Quality Assurance Standards (NQAS) assessment of this hospital, '}a <b>${T}</b> will be held on <b>${dt}</b>${tm} at <b>${h(m.venue)}</b>.</p><p>All members mentioned below are requested to attend without fail, bringing updated records, data and compliance status of their respective departments.</p><b>Agenda</b><ol>${ag.map(a=>`<li>${h(a)}</li>`).join('')}<li>Any other matter with permission of the Chair</li></ol><b>Members / Invitees</b>${tbl}`;
   else if(k=='Training')b=`<p>${pu}${pu?'a':'A'} <b>${T}</b> will be conducted ${d.date_to&&d.date_to!=m.meeting_date?'from <b>'+fd(m.meeting_date)+'</b> to <b>'+fd(d.date_to)+'</b>':'on <b>'+dt+'</b>'}${tm} at <b>${h(m.venue)}</b>${d.trainer?'. Resource person / trainer: <b>'+h(d.trainer)+'</b>':''}.</p><p>The staff mentioned below are directed to attend the training without fail.</p><b>Topics / Schedule</b><ol>${ag.map(a=>`<li>${h(a)}</li>`).join('')}</ol><b>Participants</b>${tbl}`;
@@ -540,8 +662,8 @@ function openOrder(id){const m=A.M.find(x=>x.id==id),k=otk(m),d=m.details||{},R=
 
 /* ===== Meeting resolutions ===== */
 async function res(){
-  [A.M,A.R]=await Promise.all([all(()=>sb.from('meetings').select('*').order('meeting_date',{ascending:false})),all(()=>sb.from('resolutions').select('meeting_id'))]);
-  $('main').innerHTML=`<div class="card wrap ordc"><div class="row" style="margin-bottom:4px"><h3 style="margin:0;flex:1">Meeting resolutions</h3></div><table class="rtab"><tr><th>Meeting</th><th>Date</th><th>Order No.</th><th>Resolution</th><th></th></tr>${A.M.filter(m=>otk(m)=='Meeting').map(m=>`<tr><td class="t">${h(m.title)}</td><td data-l="Date">${fd(m.meeting_date)}</td><td data-l="Order No.">${h(m.order_no)}</td><td data-l="Resolution">${A.R.some(r=>r.meeting_id==m.id)?'<span class="tag">Saved</span>':'–'}</td><td class="ra2"><button class="g" onclick="openRes(${m.id})">${core()?'Prepare / edit':'View'}</button></td></tr>`).join('')||'<tr><td colspan="5" class="sm">Create a meeting order first.</td></tr>'}</table></div><div id="re"></div>`}
+  [A.M,A.R,A.m]=await Promise.all([all(()=>sb.from('meetings').select('*').order('meeting_date',{ascending:false})),all(()=>sb.from('resolutions').select('meeting_id')),all(()=>sb.from('members').select('*').order('name'))]);A.M=ordVis(A.M);
+  $('main').innerHTML=`<div class="card wrap ordc"><div class="row" style="margin-bottom:4px"><h3 style="margin:0;flex:1">Meeting resolutions</h3></div><table class="rtab"><tr><th>Meeting</th><th>Date</th><th>Order No.</th><th>Resolution</th><th></th></tr>${A.M.filter(m=>otk(m)=='Meeting').map(m=>`<tr><td class="t">${h(m.title)}</td><td data-l="Date">${fd(m.meeting_date)}</td><td data-l="Order No.">${h(m.order_no)}</td><td data-l="Resolution">${A.R.some(r=>r.meeting_id==m.id)?'<span class="tag">Saved</span>':'–'}</td><td class="ra2"><button class="g" onclick="openRes(${m.id})">${core()?'Prepare / edit':'View'}</button>${isAdmin()&&A.R.some(r=>r.meeting_id==m.id)?` <button class="g r" onclick="delRes(${m.id})">Delete</button>`:''}</td></tr>`).join('')||'<tr><td colspan="5" class="sm">Create a meeting order first.</td></tr>'}</table></div><div id="re"></div>`}
 const ritem=(it,i)=>`<tr class="ri"><td>${i+1}</td><td><textarea class="ra" rows="2">${h(it.agenda)}</textarea></td><td><textarea class="rd" rows="2">${h(it.discussion)}</textarea></td><td><textarea class="rr" rows="2">${h(it.decision)}</textarea></td></tr>`;
 async function openRes(mid){
   const m=A.M.find(x=>x.id==mid);A.rm=m;A.m=await all(()=>sb.from('members').select('*').order('name'));
@@ -549,15 +671,16 @@ async function openRes(mid){
   A.inv=A.m.filter(x=>(m.invitees||[]).includes(x.id));
   const items=r?.items?.length?r.items:(m.agenda||[]).map(a=>({agenda:a})),att=r?.attendance||A.inv.map(x=>x.id);
   $('re').innerHTML=`<div class="card"><h3>${h(m.title)} – ${fd(m.meeting_date)}</h3><div class="pkb"><h4 style="margin:0 0 8px">Attendance – select members present</h4>
-  <div class="row"><select id="pc" onchange="pkc()"><option value="inv">Invitees of this meeting</option><option value="all">Overall (all members)</option><option value="dept">Department-wise</option><option value="aoc">Area of Concern-wise</option></select><select id="pv" onchange="pk()" style="display:none"></select><input id="pq" placeholder="Search name / designation…" oninput="pk()" size="26"><button class="g" onclick="pkAll(true)">Add all shown</button></div>
+  <div class="row"><select id="pc" onchange="pkc()"><option value="inv">Invitees of this meeting</option><option value="all">Overall (all members)</option><option value="dept">Department-wise</option><option value="aoc">Area of Concern-wise</option><option value="cat">Category-wise</option><option value="role">Role-wise</option></select><select id="pv" onchange="pk()" style="display:none"></select><input id="pq" placeholder="Search name / designation…" oninput="pk()" size="26"><button class="g" onclick="pkAll(true)">Add all shown</button></div>
   <div class="pkl" id="pa"></div>
   <h4 style="margin:12px 0 6px">Present (<span id="pn">0</span>) <button class="g" onclick="A.sel=[];pk()">Clear</button></h4>
   <div class="pkl" id="ps"></div></div>
   <div class="row" style="margin-top:8px">Chaired by <input id="rc" size="32" placeholder="Name & designation" value="${h(r?.chair)}"></div>
   <div class="wrap"><table id="rt2"><tr><th>#</th><th>Agenda</th><th>Discussion</th><th>Resolution / decision</th></tr>${items.map(ritem).join('')}</table></div>
-  <div class="row" style="margin-top:8px">${core()?'<button onclick="saveRes()">Save</button><button class="g" onclick="addRI()">Add item</button>':''}<button class="g" onclick="resDoc()">Print resolution</button></div></div>`;
+  <div class="row" style="margin-top:8px">${core()?'<button onclick="saveRes()">Save</button><button class="g" onclick="addRI()">Add item</button>':''}<button class="g" onclick="resDoc()">Print resolution</button>${isAdmin()&&r?`<button class="g r" onclick="delRes(${m.id})">Delete resolution</button>`:''}</div></div>`;
   A.sel=att.map(id=>({id,role:''}));A.pkm='att';pkc();
   $('re').scrollIntoView()}
+async function delRes(mid){if(!isAdmin())return alert('Only the admin login can delete resolutions.');if(!confirm('Delete the saved resolution (attendance, discussion and decisions) of this meeting? The meeting order itself is kept.'))return;const{error}=await sb.from('resolutions').delete().eq('meeting_id',mid);if(error)return alert(error.message+'\nIf this is a permission error, add a delete policy for the resolutions table in Supabase.');res()}
 function addRI(){$('rt2').insertAdjacentHTML('beforeend',ritem({},$('rt2').rows.length-1))}
 function colRes(){const q=(r,c)=>r.querySelector(c).value;return{items:[...document.querySelectorAll('.ri')].map(r=>({agenda:q(r,'.ra'),discussion:q(r,'.rd'),decision:q(r,'.rr')})),attendance:A.sel.map(x=>x.id),chair:$('rc').value}}
 async function saveRes(){const{error}=await sb.from('resolutions').upsert({meeting_id:A.rm.id,...colRes(),updated_at:new Date().toISOString()},{onConflict:'meeting_id'});alert(error?error.message:'Saved')}
@@ -573,7 +696,7 @@ function resDoc(){const m=A.rm,c=colRes();
 /* ===== Outcome (Area H) analysis ===== */
 const SEED=[['H1-01','Bed Occupancy Rate','H1 Productivity','Inpatient days','Available bed-days (beds × days)',100,'%','higher'],['H1-02','Bed Turnover Rate','H1 Productivity','Discharges (incl. deaths, LAMA)','Functional beds',1,'per bed','higher'],['H1-03','Referral Rate','H1 Productivity','Patients referred out','Total OPD + admissions',100,'%','lower'],['H2-01','Average Length of Stay','H2 Efficiency','Inpatient days','Discharges (incl. deaths, LAMA)',1,'days','lower'],['H2-02','Average OPD Waiting Time','H2 Efficiency','Total waiting minutes (sample)','Patients sampled',1,'min','lower'],['H3-01','Hospital Acquired Infection Rate','H3 Clinical Care & Safety','HAI cases','Patient days',1000,'per 1000 pt-days','lower'],['H3-02','Surgical Site Infection Rate','H3 Clinical Care & Safety','SSI cases','Surgeries done',100,'%','lower'],['H3-03','Surgical Safety Checklist Adherence','H3 Clinical Care & Safety','Surgeries with checklist','Total surgeries',100,'%','higher'],['H3-04','Hand Hygiene Compliance','H3 Clinical Care & Safety','Compliant opportunities','Opportunities observed',100,'%','higher'],['H3-05','Institutional Mortality Rate','H3 Clinical Care & Safety','Deaths','Admissions',100,'%','lower'],['H4-01','Patient Satisfaction Score','H4 Service Quality','Satisfied responses','Total responses',100,'%','higher']];
 async function seedI(){const{error}=await sb.from('outcome_indicators').insert(SEED.map(s=>({code:s[0],name:s[1],standard:s[2],num_label:s[3],den_label:s[4],multiplier:s[5],unit:s[6],direction:s[7]})));if(error)return alert(error.message);out()}
-async function out(){[A.I,A.O]=await Promise.all([all(()=>sb.from('outcome_indicators').select('*').eq('active',true).order('code')),all(()=>sb.from('outcome_data').select('*').order('month'))]);A.ot=A.ot||'an';drawO()}
+async function out(){[A.I,A.O]=await Promise.all([all(()=>sb.from('outcome_indicators').select('*').eq('active',true).order('code')),all(()=>sb.from('outcome_data').select('*').order('month'))]);if(!core()){const V=vf();A.O=A.O.filter(r=>V(r.dept_id))}A.ot=A.ot||'an';drawO()}
 function drawO(){const T=[['an','Analysis'],['en','Data entry'],['in','Indicators']];
   $('main').innerHTML=`<div class="card"><div class="row">${T.map(t=>`<button class="${A.ot==t[0]?'':'g'}" onclick="A.ot='${t[0]}';drawO()">${t[1]}</button>`).join('')}</div>${A.I.length?'':`<p>No indicators defined yet. ${core()?'<button onclick="seedI()">Load standard Area H indicators</button>':'Ask the Core Committee to set them up.'}</p>`}</div><div id="oc"></div>`;
   if(A.I.length)({an:oAn,en:oEn,in:oIn}[A.ot])()}
@@ -591,7 +714,7 @@ function oAn(){
   A.ad=A.ad||'';A.af=A.af||d0.toISOString().slice(0,7);A.at2=A.at2||today().slice(0,7);
   const dp=A.ad,f=A.af,t=A.at2,s=ser(I,dp,f,t),vs=s.filter(x=>x.v!=null),last=vs[vs.length-1],avg=vs.length?vs.reduce((p,q)=>p+q.v,0)/vs.length:null,tr=trd(s,I),mt=vs.filter(x=>ok(I,x.v)).length,sub=(dp?h(dn(dp)):'All departments combined')+' | '+mlb(f)+' to '+mlb(t);
   const ov=A.I.map(i=>{const q=ser(i,dp,f,t).filter(x=>x.v!=null),l=q[q.length-1],r=trd(q,i);return`<tr class="click" onclick="A.ai=${i.id};oAn()"><td>${h(i.code)}</td><td>${h(i.name)}</td><td>${l?fx(l.v)+' '+h(i.unit):'–'}</td><td>${i.target??'–'}</td><td>${l?okTag(ok(i,l.v)):'–'}</td><td>${r?r.t:'–'}</td></tr>`}).join('');
-  const cmp=!dp&&last?depts.filter(d=>d.active).concat([{id:'ALL',name:'Hospital-wide'}]).map(d=>{const r=A.O.find(x=>x.indicator_id==I.id&&x.dept_id==d.id&&x.month.slice(0,7)==last.k),v=r&&+r.denominator?r.numerator/r.denominator*I.multiplier:null;return v==null?'':`<tr><td>${h(d.name)}</td><td>${fx(v)}</td><td>${okTag(ok(I,v))}</td></tr>`}).join(''):'';
+  const cmp=!dp&&last?(core()?depts.filter(d=>d.active).concat([{id:'ALL',name:'Hospital-wide'}]):mine()).map(d=>{const r=A.O.find(x=>x.indicator_id==I.id&&x.dept_id==d.id&&x.month.slice(0,7)==last.k),v=r&&+r.denominator?r.numerator/r.denominator*I.multiplier:null;return v==null?'':`<tr><td>${h(d.name)}</td><td>${fx(v)}</td><td>${okTag(ok(I,v))}</td></tr>`}).join(''):'';
   const nar=last?`<b>${h(I.name)}</b> (${sub}): latest value ${fx(last.v)} ${h(I.unit)} in ${mlb(last.k)}; average ${fx(avg)} over ${vs.length} month(s); trend ${tr?tr.t.toLowerCase():'cannot be assessed (needs at least 2 months)'}. ${I.target!=null?`Target ${I.target} ${h(I.unit)} (${I.direction=='higher'?'higher is better':'lower is better'}) was met in ${mt} of ${vs.length} month(s).${ok(I,last.v)===false?' The latest value is off target – root-cause analysis and a corrective-action entry in Gaps &amp; Actions is advised.':''}`:'No target is set for this indicator.'}`:'No data entered for the selected period.';
   $('oc').innerHTML=`<div class="card"><div class="row"><select onchange="A.ai=this.value;oAn()">${A.I.map(i=>`<option value="${i.id}" ${i.id==I.id?'selected':''}>${h(i.code)} – ${h(i.name)}</option>`).join('')}</select><select onchange="A.ad=this.value;oAn()"><option value="">All departments</option>${mine().map(d=>`<option value="${d.id}" ${d.id==dp?'selected':''}>${h(d.name)}</option>`).join('')}</select>From <input type="month" value="${f}" onchange="A.af=this.value;oAn()"> To <input type="month" value="${t}" onchange="A.at2=this.value;oAn()"><button class="g" onclick="print()">Print</button></div>
   ${ph('Outcome (Area H) Analysis',sub)}
@@ -618,7 +741,7 @@ const EMB='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBw
 const LH=()=>`<div class="lh"><img src="${EMB}" alt=""><b>O/o the Superintendent, Chandannagar Sub-Divisional Hospital</b><b>Department of Health &amp; Family Welfare</b><b>Government of West Bengal</b><b class="s i">Chandannagar, Hooghly, PIN- 712136</b><b class="s i">Mail id: <a href="mailto:cgr.sdh2023@gmail.com">cgr.sdh2023@gmail.com</a></b><b class="s i">&#9742; : 033 2683 5399</b></div><div class="lr"></div>`;
 
 /* ===== Action plan report ===== */
-async function runAP(d,f,to,sub){const G=(await all(()=>sb.from('gaps').select('*,checkpoints(me_ref,standard)').neq('stage','Improved').order('dept_id').order('id'))).filter(g=>inD(g.dept_id,d)&&(!f||g.identified_on>=f)&&g.identified_on<=to);
+async function runAP(d,f,to,sub){const V=vf(),G=(await all(()=>sb.from('gaps').select('*,checkpoints(me_ref,standard)').neq('stage','Improved').order('dept_id').order('id'))).filter(g=>V(g.dept_id)&&inD(g.dept_id,d)&&(!f||g.identified_on>=f)&&g.identified_on<=to);
   showR({pre:`<div class="ap">${phs('Action Plan for Gaps',sub)}`,tc:'aptb rpt',post:sig()+'</div>',th:`<tr><th>S. No.</th><th>Department</th><th>ME Ref. / Standard</th><th>Gap observed</th><th>Root cause</th><th>Corrective action</th><th>Preventive action</th><th>Resources</th><th>Responsible person</th><th>Timeline</th><th>Status</th></tr>`,rows:G.map((g,i)=>{const p=g.plan||{};return`<tr><td>${i+1}</td><td>${h(dn(g.dept_id))}</td><td>${h(g.checkpoints?.me_ref)}<div class="sm">${h(g.checkpoints?.standard)}</div></td><td>${h(g.description)}</td><td class="pw">${h(g.root_cause)}</td><td class="pw">${h(p.corrective)}</td><td class="pw">${h(p.preventive)}</td><td class="pw">${h(p.resources)}</td><td>${h(g.owner)}</td><td>${fd(g.target_date)}</td><td>${h(g.stage)}</td></tr>`})})}
 
 /* ===== PDCA cycle documentation ===== */
@@ -630,10 +753,10 @@ function drawP(c){c=c||{};
   <textarea id="pp" rows="2" placeholder="Problem statement / aim">${h(c.problem)}</textarea>
   <div class="pdg">${WHEEL}${PD.map(s=>`<div class="pq" style="--c:${s[3]}"><div class="pqh"><span>${s[1][0]}</span>${s[1]} <small>${s[2]}</small><input type="date" id="${s[0]}d" value="${c[s[0]+'_date']||''}"></div><textarea id="${s[0]}t" rows="4" placeholder="${s[2]}…">${h(c[s[0]+'_txt'])}</textarea></div>`).join('')}</div>
   <div class="row"><button onclick="savePd()">Save</button><button class="g" onclick="pdca()">Clear</button></div></div>
-  <div class="card wrap"><h3>PDCA cycles</h3><table><tr><th>Title</th><th>Department</th><th>Ref</th><th>Status</th><th>Owner</th><th></th></tr>${A.P.filter(x=>mine().some(d=>d.id==x.dept_id)).map(x=>`<tr><td>${h(x.title)}</td><td>${h(dn(x.dept_id))}</td><td>${h(x.ref)}</td><td><span class="tag">${h(x.status)}</span></td><td>${h(x.owner)}</td><td><button class="g" onclick="drawP(A.P.find(y=>y.id==${x.id}));scrollTo(0,0)">Edit</button> <button class="g" onclick="pdDoc(${x.id})">1-page print</button>${core()?` <button class="g" onclick="delPd(${x.id})">Delete</button>`:''}</td></tr>`).join('')||'<tr><td colspan="6" class="sm">No cycles yet</td></tr>'}</table></div>`}
+  <div class="card wrap"><h3>PDCA cycles</h3><table><tr><th>Title</th><th>Department</th><th>Ref</th><th>Status</th><th>Owner</th><th></th></tr>${A.P.filter(x=>mine().some(d=>d.id==x.dept_id)).map(x=>`<tr><td>${h(x.title)}</td><td>${h(dn(x.dept_id))}</td><td>${h(x.ref)}</td><td><span class="tag">${h(x.status)}</span></td><td>${h(x.owner)}</td><td><button class="g" onclick="drawP(A.P.find(y=>y.id==${x.id}));scrollTo(0,0)">Edit</button> <button class="g" onclick="pdDoc(${x.id})">1-page print</button>${isAdmin()?` <button class="g r" onclick="delPd(${x.id})">Delete</button>`:''}</td></tr>`).join('')||'<tr><td colspan="6" class="sm">No cycles yet</td></tr>'}</table></div>`}
 async function savePd(){const t=$('pt').value.trim();if(!t)return alert('Enter title');const o={dept_id:String($('pdp').value),ref:$('pr').value,title:t,problem:$('pp').value,owner:$('po').value,status:$('ps').value};PD.forEach(s=>{o[s[0]+'_txt']=$(s[0]+'t').value;o[s[0]+'_date']=$(s[0]+'d').value||null});const i=$('pi').value;
   if(!i)o.created_by=me.full_name||me.email;const{error}=i?await sb.from('pdca_cycles').update(o).eq('id',i):await sb.from('pdca_cycles').insert(o);if(error)return alert(error.message+'\nIf the table is missing, run migration.sql in Supabase.');pdca()}
-async function delPd(id){if(!confirm('Delete this PDCA cycle?'))return;const{error}=await sb.from('pdca_cycles').delete().eq('id',id);if(error)return alert(error.message);pdca()}
+async function delPd(id){if(!isAdmin())return alert('Only the admin login can delete PDCA cycles.');if(!confirm('Delete this PDCA cycle?'))return;const{error}=await sb.from('pdca_cycles').delete().eq('id',id);if(error)return alert(error.message);pdca()}
 function pdDoc(id){const c=A.P.find(x=>x.id==id);
   $('mbox').innerHTML=`<div class="row np"><button onclick="pm()">Print (1 page)</button><button class="g" onclick="cm()">Close</button></div><div class="od pdp">${LH()}<div class="mm"><span>Ref: ${h(c.ref)}</span><span>Date: ${fd(today())}</span></div><div class="o1">PDCA CYCLE DOCUMENTATION</div><div class="o2">${h(c.title)}</div>
   <table style="width:100%;margin-bottom:6px"><tr><th>Department</th><td>${h(dn(c.dept_id))}</td><th>Owner</th><td>${h(c.owner)}</td><th>Status</th><td>${h(c.status)}</td></tr></table><p><b>Problem statement / aim:</b> ${h(c.problem)}</p>
